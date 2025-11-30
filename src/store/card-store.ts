@@ -13,6 +13,7 @@ interface CardState {
     saveCard: () => Promise<void>;
     loadCard: (id: string) => Promise<void>;
     isSaving: boolean;
+    lastSaved: number;
 }
 
 const initialData: CardData = {
@@ -41,6 +42,7 @@ const initialData: CardData = {
 export const useCardStore = create<CardState>((set, get) => ({
     data: initialData,
     isSaving: false,
+    lastSaved: 0,
     updatePersonal: (field, value) =>
         set((state) => ({
             data: {
@@ -82,7 +84,15 @@ export const useCardStore = create<CardState>((set, get) => ({
         set((state) => ({
             data: { ...state.data, templateId },
         })),
+
     saveCard: async () => {
+        const now = Date.now();
+        const lastSaved = get().lastSaved;
+
+        if (now - lastSaved < 2000) {
+            throw new Error('Please wait a moment before saving again.');
+        }
+
         const supabase = createClient();
         set({ isSaving: true });
 
@@ -137,6 +147,8 @@ export const useCardStore = create<CardState>((set, get) => ({
                         slug: user.id.slice(0, 8),
                     });
             }
+
+            set({ lastSaved: now });
         } catch (error) {
             console.error('Error saving card (full):', error);
             const err = error as { message: string; details?: string; hint?: string };

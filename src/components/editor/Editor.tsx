@@ -165,76 +165,7 @@ const Editor = () => {
                             <div className="font-semibold text-sm">{template.name}</div>
                         </button>
                     ))}
-                </div>
-            </div>
 
-            {/* Personal Info */}
-            <div>
-                <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">Personal Info</h3>
-                <div className="space-y-3">
-                    <input
-                        type="text"
-                        placeholder="Full Name"
-                        value={data.personal.fullName}
-                        onChange={(e) => updatePersonal('fullName', e.target.value)}
-                        className="w-full p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-transparent text-sm"
-                    />
-                    <input
-                        type="text"
-                        placeholder="Job Title"
-                        value={data.personal.jobTitle}
-                        onChange={(e) => updatePersonal('jobTitle', e.target.value)}
-                        className="w-full p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-transparent text-sm"
-                    />
-                    <input
-                        type="text"
-                        placeholder="Company"
-                        value={data.personal.company || ''}
-                        onChange={(e) => updatePersonal('company', e.target.value)}
-                        className="w-full p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-transparent text-sm"
-                    />
-                    <textarea
-                        placeholder="About / Bio"
-                        value={data.personal.about}
-                        onChange={(e) => updatePersonal('about', e.target.value)}
-                        rows={3}
-                        className="w-full p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-transparent text-sm resize-none"
-                    />
-                </div>
-            </div>
-
-            {/* Contact Info */}
-            <div>
-                <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">Contact Details</h3>
-                <div className="space-y-3">
-                    <input
-                        type="email"
-                        placeholder="Email"
-                        value={data.personal.email}
-                        onChange={(e) => updatePersonal('email', e.target.value)}
-                        className="w-full p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-transparent text-sm"
-                    />
-                    <input
-                        type="tel"
-                        placeholder="Phone Number"
-                        value={data.personal.phone}
-                        onChange={(e) => updatePersonal('phone', e.target.value)}
-                        className="w-full p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-transparent text-sm"
-                    />
-                    <input
-                        type="text"
-                        placeholder="Location"
-                        value={data.personal.location}
-                        onChange={(e) => updatePersonal('location', e.target.value)}
-                        className="w-full p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-transparent text-sm"
-                    />
-                    <input
-                        type="url"
-                        placeholder="Website URL"
-                        value={data.personal.website || ''}
-                        onChange={(e) => updatePersonal('website', e.target.value)}
-                        className="w-full p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-transparent text-sm"
-                    />
                 </div>
             </div>
 
