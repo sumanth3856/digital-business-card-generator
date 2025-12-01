@@ -15,14 +15,14 @@ export const UserNav = ({ user }: UserNavProps) => {
     return (
         <button
             onClick={() => router.push('/profile')}
-            className="flex items-center gap-3 pl-1 pr-4 py-1 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all group"
+            className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
             title="Go to Profile"
         >
-            <div className="w-8 h-8 bg-white dark:bg-slate-950 text-blue-600 rounded-full flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
+            <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 text-blue-600 rounded-full flex items-center justify-center">
                 <UserIcon className="w-4 h-4" />
             </div>
-            <span className="text-sm font-medium text-slate-700 dark:text-slate-200 hidden md:block group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                {user.user_metadata?.full_name || user.email?.split('@')[0]}
+            <span className="text-sm font-medium text-slate-700 dark:text-slate-200 hidden md:block">
+                {user.user_metadata?.full_name || user.email}
             </span>
         </button>
     );
