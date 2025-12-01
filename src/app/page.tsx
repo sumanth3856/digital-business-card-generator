@@ -48,9 +48,7 @@ export default function Home() {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-8">
-            <a href="#templates" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Templates</a>
-            <a href="#features" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Features</a>
-            <a href="#pricing" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Pricing</a>
+
           </div>
 
           <div className="hidden md:flex items-center gap-4">
@@ -86,9 +84,7 @@ export default function Home() {
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-40 bg-background pt-24 px-6 md:hidden animate-in slide-in-from-top-10 duration-200">
           <div className="flex flex-col gap-6 text-lg">
-            <a href="#templates" onClick={() => setIsMobileMenuOpen(false)} className="text-muted-foreground hover:text-primary transition-colors">Templates</a>
-            <a href="#features" onClick={() => setIsMobileMenuOpen(false)} className="text-muted-foreground hover:text-primary transition-colors">Features</a>
-            <a href="#pricing" onClick={() => setIsMobileMenuOpen(false)} className="text-muted-foreground hover:text-primary transition-colors">Pricing</a>
+
             <hr className="border-white/10" />
             <Link
               href="/create"

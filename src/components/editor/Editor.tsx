@@ -149,6 +149,84 @@ const Editor = () => {
                 </div>
             </div>
 
+            {/* Personal Information */}
+            <div>
+                <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">Personal Information</h3>
+                <div className="space-y-4">
+                    <div>
+                        <label className="block text-xs text-slate-500 mb-1">Full Name</label>
+                        <input
+                            type="text"
+                            value={data.personal.fullName}
+                            onChange={(e) => updatePersonal('fullName', e.target.value)}
+                            className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-transparent text-sm"
+                            placeholder="John Doe"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-xs text-slate-500 mb-1">Job Title</label>
+                        <input
+                            type="text"
+                            value={data.personal.jobTitle}
+                            onChange={(e) => updatePersonal('jobTitle', e.target.value)}
+                            className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-transparent text-sm"
+                            placeholder="Software Engineer"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-xs text-slate-500 mb-1">Company</label>
+                        <input
+                            type="text"
+                            value={data.personal.company}
+                            onChange={(e) => updatePersonal('company', e.target.value)}
+                            className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-transparent text-sm"
+                            placeholder="Acme Corp"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-xs text-slate-500 mb-1">Bio / Tagline</label>
+                        <textarea
+                            value={data.personal.tagline}
+                            onChange={(e) => updatePersonal('tagline', e.target.value)}
+                            className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-transparent text-sm min-h-[80px]"
+                            placeholder="Brief bio or tagline..."
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-xs text-slate-500 mb-1">Location</label>
+                        <input
+                            type="text"
+                            value={data.personal.location}
+                            onChange={(e) => updatePersonal('location', e.target.value)}
+                            className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-transparent text-sm"
+                            placeholder="San Francisco, CA"
+                        />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-xs text-slate-500 mb-1">Email</label>
+                            <input
+                                type="email"
+                                value={data.personal.email}
+                                onChange={(e) => updatePersonal('email', e.target.value)}
+                                className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-transparent text-sm"
+                                placeholder="john@example.com"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-xs text-slate-500 mb-1">Phone</label>
+                            <input
+                                type="tel"
+                                value={data.personal.phone}
+                                onChange={(e) => updatePersonal('phone', e.target.value)}
+                                className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-transparent text-sm"
+                                placeholder="+1 (555) 000-0000"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             {/* Templates */}
             <div>
                 <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">Template</h3>

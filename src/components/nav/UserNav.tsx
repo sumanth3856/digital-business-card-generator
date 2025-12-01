@@ -1,11 +1,9 @@
 'use client';
 
-import { createClient } from '@/lib/supabase/client';
 import { User } from '@supabase/supabase-js';
-import { LogOut, User as UserIcon } from 'lucide-react';
+import { User as UserIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { toast } from 'sonner';
 
 interface UserNavProps {
     user: User;
@@ -14,13 +12,7 @@ interface UserNavProps {
 export const UserNav = ({ user }: UserNavProps) => {
     const [isOpen, setIsOpen] = useState(false);
     const router = useRouter();
-    const supabase = createClient();
 
-    const handleSignOut = async () => {
-        await supabase.auth.signOut();
-        toast.success('Logged out successfully');
-        router.refresh();
-    };
 
     return (
         <div className="relative">
@@ -44,11 +36,11 @@ export const UserNav = ({ user }: UserNavProps) => {
                         </p>
                     </div>
                     <button
-                        onClick={handleSignOut}
-                        className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center gap-2"
+                        onClick={() => router.push('/profile')}
+                        className="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center gap-2"
                     >
-                        <LogOut className="w-4 h-4" />
-                        Sign Out
+                        <UserIcon className="w-4 h-4" />
+                        Profile
                     </button>
                 </div>
             )}
