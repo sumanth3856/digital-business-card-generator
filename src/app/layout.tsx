@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
 import ErrorBoundary from '@/components/ui/ErrorBoundary';
+import { ScrollToTop } from '@/components/ui/ScrollToTop';
 
 
 const inter = Inter({ subsets: ["latin"] });
@@ -23,6 +24,7 @@ export default function RootLayout({
         <ErrorBoundary>
           {children}
           <Toaster richColors position="top-center" />
+          <ScrollToTop />
         </ErrorBoundary>
       </body>
     </html>
