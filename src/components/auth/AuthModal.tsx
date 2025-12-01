@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
-import { X, Mail, Lock, Loader2, ArrowRight } from 'lucide-react';
+import { X, Mail, Lock, Loader2, ArrowRight, User as UserIcon } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface AuthModalProps {
@@ -16,6 +16,7 @@ export const AuthModal = ({ isOpen, onClose, defaultView = 'login' }: AuthModalP
     const [view, setView] = useState<'login' | 'signup'>(defaultView);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [fullName, setFullName] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -36,6 +37,11 @@ export const AuthModal = ({ isOpen, onClose, defaultView = 'login' }: AuthModalP
                 const { error: authError } = await supabase.auth.signUp({
                     email,
                     password,
+                    options: {
+                        data: {
+                            full_name: fullName,
+                        },
+                    },
                 });
                 if (authError) throw authError;
 
@@ -100,13 +106,36 @@ export const AuthModal = ({ isOpen, onClose, defaultView = 'login' }: AuthModalP
                         </div>
                     ) : (
                         <form onSubmit={handleSubmit} className="space-y-4">
+                            {view === 'signup' && (
+                                <div>
+                                    <label htmlFor="auth-fullname" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Full Name</label>
+                                    <div className="relative">
+                                        <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                                        <input
+                                            id="auth-fullname"
+                                            name="fullName"
+                                            type="text"
+                                            required
+                                            autoComplete="name"
+                                            value={fullName}
+                                            onChange={(e) => setFullName(e.target.value)}
+                                            className="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                                            placeholder="John Doe"
+                                        />
+                                    </div>
+                                </div>
+                            )}
+
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Email</label>
+                                <label htmlFor="auth-email" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Email</label>
                                 <div className="relative">
                                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                                     <input
+                                        id="auth-email"
+                                        name="email"
                                         type="email"
                                         required
+                                        autoComplete="email"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                         className="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all"
@@ -116,12 +145,15 @@ export const AuthModal = ({ isOpen, onClose, defaultView = 'login' }: AuthModalP
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Password</label>
+                                <label htmlFor="auth-password" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Password</label>
                                 <div className="relative">
                                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                                     <input
+                                        id="auth-password"
+                                        name="password"
                                         type="password"
                                         required
+                                        autoComplete={view === 'signup' ? 'new-password' : 'current-password'}
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                         className="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all"

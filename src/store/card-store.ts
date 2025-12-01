@@ -1,3 +1,4 @@
+
 import { create } from 'zustand';
 import { CardData, SocialLink } from '@/types/card';
 import { createClient } from '@/lib/supabase/client';
@@ -14,6 +15,8 @@ interface CardState {
     loadCard: (id: string) => Promise<void>;
     isSaving: boolean;
     lastSaved: number;
+    currentCardId: string | null;
+    resetCard: () => void;
 }
 
 const initialData: CardData = {
@@ -41,8 +44,10 @@ const initialData: CardData = {
 
 export const useCardStore = create<CardState>((set, get) => ({
     data: initialData,
+    currentCardId: null,
     isSaving: false,
     lastSaved: 0,
+    resetCard: () => set({ data: initialData, currentCardId: null }),
     updatePersonal: (field, value) =>
         set((state) => ({
             data: {
@@ -97,16 +102,19 @@ export const useCardStore = create<CardState>((set, get) => ({
         set({ isSaving: true });
 
         try {
-            console.log('Attempting to save card...');
 
             // Debug: Check session first
             const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
-            console.log('Current Session:', sessionData.session ? 'Exists' : 'Null', 'Error:', sessionError);
 
             const { data: { user }, error: authError } = await supabase.auth.getUser();
 
             if (authError) {
-                console.error('Auth error in saveCard:', authError);
+                // Suppress console.error for expected auth errors (like missing session)
+                if (authError.message.includes('Auth session missing') || authError.message.includes('User not authenticated')) {
+                    console.warn('User not authenticated, prompting login.');
+                } else {
+                    console.error('Auth error in saveCard:', authError);
+                }
                 throw new Error(`Auth Error: ${authError.message}`);
             }
 
@@ -115,46 +123,73 @@ export const useCardStore = create<CardState>((set, get) => ({
                 throw new Error('User not authenticated');
             }
 
-            console.log('User authenticated:', user.id);
-
             const currentData = get().data;
+            const currentCardId = get().currentCardId;
 
-            // Check if card exists for user
-            const { data: existingCard, error: selectError } = await supabase
-                .from('cards')
+            // Ensure profile exists
+            const { data: profile, error: profileError } = await supabase
+                .from('profiles')
                 .select('id')
-                .eq('user_id', user.id)
+                .eq('id', user.id)
                 .single();
 
-            if (selectError && selectError.code !== 'PGRST116') {
-                throw selectError;
+            if (!profile) {
+                const { error: createProfileError } = await supabase
+                    .from('profiles')
+                    .insert({
+                        id: user.id,
+                        full_name: currentData.personal.fullName || user.email?.split('@')[0] || 'User',
+                        avatar_url: '',
+                    });
+
+                if (createProfileError) {
+                    console.error('Error creating profile:', createProfileError);
+                    throw new Error(`Failed to create profile: ${createProfileError.message}`);
+                }
             }
 
-            if (existingCard) {
-                await supabase
+            if (currentCardId) {
+                const { error: updateError } = await supabase
                     .from('cards')
                     .update({
                         data: currentData,
                         updated_at: new Date().toISOString(),
                     })
-                    .eq('id', existingCard.id);
+                    .eq('id', currentCardId)
+                    .eq('user_id', user.id); // Security check
+
+                if (updateError) throw updateError;
             } else {
-                await supabase
+                const { data: newCard, error: insertError } = await supabase
                     .from('cards')
                     .insert({
                         user_id: user.id,
                         data: currentData,
-                        slug: user.id.slice(0, 8),
-                    });
+                        slug: user.id.slice(0, 8) + '-' + Date.now().toString().slice(-4), // Ensure unique slug
+                    })
+                    .select('id')
+                    .single();
+
+                if (insertError) throw insertError;
+
+                if (newCard) {
+                    set({ currentCardId: newCard.id });
+                }
             }
 
             set({ lastSaved: now });
         } catch (error) {
-            console.error('Error saving card (full):', error);
             const err = error as { message: string; details?: string; hint?: string };
-            console.error('Error message:', err.message);
-            console.error('Error details:', err.details);
-            console.error('Error hint:', err.hint);
+
+            // Suppress console.error for expected auth errors
+            if (err.message === 'User not authenticated' || err.message?.includes('Auth session missing') || err.message?.includes('Auth Error')) {
+                console.warn('Save prevented: User not authenticated');
+            } else {
+                console.error('Error saving card (full):', error);
+                console.error('Error message:', err.message);
+                if (err.details) console.error('Error details:', err.details);
+                if (err.hint) console.error('Error hint:', err.hint);
+            }
             throw error;
         } finally {
             set({ isSaving: false });
@@ -165,14 +200,14 @@ export const useCardStore = create<CardState>((set, get) => ({
         try {
             const { data: card, error } = await supabase
                 .from('cards')
-                .select('data')
+                .select('data, id')
                 .eq('id', id)
                 .single();
 
             if (error) throw error;
 
             if (card) {
-                set({ data: card.data as CardData });
+                set({ data: card.data as CardData, currentCardId: card.id });
             }
         } catch (error) {
             console.error('Error loading card:', error);

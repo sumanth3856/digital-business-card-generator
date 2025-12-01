@@ -40,16 +40,21 @@ const TechTemplate: React.FC<TemplateProps> = ({ data }) => {
                         <h1 className="text-xl font-bold text-[#c0caf5] mb-1">
                             <span className="text-[#bb9af7]">const</span> {personal.fullName}
                         </h1>
-                        <p className="text-sm text-[#7aa2f7]">
+                        <div className="text-sm text-[#7aa2f7]">
                             <span className="text-[#565f89]">// </span>
                             {personal.jobTitle}
-                        </p>
+                            {personal.company && (
+                                <div className="ml-4 text-[#565f89]">
+                                    @ {personal.company}
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
 
                 <div className="mb-8 p-4 rounded bg-[#24283b] border-l-2 border-[#e0af68]">
                     <p className="text-sm leading-relaxed">
-                        <span className="text-[#f7768e]">&gt;</span> {personal.about}
+                        <span className="text-[#f7768e]">&gt;</span> {personal.tagline || personal.about}
                         <span className="animate-pulse">_</span>
                     </p>
                 </div>

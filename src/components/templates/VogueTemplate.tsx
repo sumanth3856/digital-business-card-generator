@@ -43,13 +43,20 @@ const VogueTemplate: React.FC<TemplateProps> = ({ data }) => {
                     <h1 className="text-5xl font-serif italic text-black mb-2 mix-blend-multiply">
                         {personal.fullName}
                     </h1>
-                    <p className="text-xs font-bold tracking-[0.3em] uppercase text-black mb-8 border-b border-black pb-4 inline-block">
-                        {personal.jobTitle}
-                    </p>
+                    <div className="flex flex-col items-start gap-1 mb-8 border-b border-black pb-4">
+                        <p className="text-xs font-bold tracking-[0.3em] uppercase text-black">
+                            {personal.jobTitle}
+                        </p>
+                        {personal.company && (
+                            <p className="text-[10px] font-bold tracking-widest uppercase text-gray-600">
+                                @ {personal.company}
+                            </p>
+                        )}
+                    </div>
 
                     <div className="flex flex-col gap-6">
                         <p className="text-sm font-serif leading-relaxed text-gray-800 max-w-xs">
-                            {personal.about}
+                            {personal.tagline || personal.about}
                         </p>
 
                         <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs font-medium uppercase tracking-wider">
@@ -61,6 +68,11 @@ const VogueTemplate: React.FC<TemplateProps> = ({ data }) => {
                             {personal.phone && (
                                 <div className="col-span-2 flex items-center gap-2 border-b border-gray-300 pb-1">
                                     <span>T:</span> {personal.phone}
+                                </div>
+                            )}
+                            {personal.location && (
+                                <div className="col-span-2 flex items-center gap-2 border-b border-gray-300 pb-1">
+                                    <span>L:</span> {personal.location}
                                 </div>
                             )}
                         </div>

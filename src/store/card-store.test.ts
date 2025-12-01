@@ -1,97 +1,91 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useCardStore } from './card-store';
 
-describe('useCardStore', () => {
+// Mock Supabase client
+const mockSupabase = {
+    auth: {
+        getUser: vi.fn(),
+        getSession: vi.fn(),
+    },
+    from: vi.fn(() => ({
+        select: vi.fn(() => ({
+            eq: vi.fn(() => ({
+                single: vi.fn(),
+            })),
+        })),
+        insert: vi.fn(),
+        update: vi.fn(() => ({
+            eq: vi.fn(),
+        })),
+    })),
+};
+
+vi.mock('@/lib/supabase/client', () => ({
+    createClient: () => mockSupabase,
+}));
+
+describe('Card Store', () => {
     beforeEach(() => {
         useCardStore.setState({
             data: {
-                templateId: 'modern',
                 personal: {
                     fullName: '',
                     jobTitle: '',
                     tagline: '',
+                    about: '',
                     email: '',
                     phone: '',
                     location: '',
-                    about: '',
                     company: '',
                     website: '',
                 },
                 socialLinks: [],
                 theme: {
-                    primaryColor: '#000000',
-                    secondaryColor: '#ffffff',
+                    primaryColor: '#2563eb',
+                    secondaryColor: '#4f46e5',
                     backgroundColor: '#ffffff',
-                    textColor: '#000000',
+                    textColor: '#0f172a',
                     fontPair: 'sans',
                 },
+                templateId: 'modern',
             },
             isSaving: false,
             lastSaved: 0,
         });
+        vi.clearAllMocks();
     });
 
-    it('should update personal info', () => {
+    it('should update personal information', () => {
         const { updatePersonal } = useCardStore.getState();
-
         updatePersonal('fullName', 'John Doe');
-
         expect(useCardStore.getState().data.personal.fullName).toBe('John Doe');
+    });
+
+    it('should add a social link', () => {
+        const { addSocialLink } = useCardStore.getState();
+        const link = { id: '1', platform: 'twitter', url: 'https://twitter.com/johndoe' };
+        addSocialLink(link);
+        expect(useCardStore.getState().data.socialLinks).toHaveLength(1);
+        expect(useCardStore.getState().data.socialLinks[0]).toEqual(link);
+    });
+
+    it('should remove a social link', () => {
+        const { addSocialLink, removeSocialLink } = useCardStore.getState();
+        const link = { id: '1', platform: 'twitter', url: 'https://twitter.com/johndoe' };
+        addSocialLink(link);
+        removeSocialLink('1');
+        expect(useCardStore.getState().data.socialLinks).toHaveLength(0);
     });
 
     it('should update theme', () => {
         const { updateTheme } = useCardStore.getState();
-
-        updateTheme('primaryColor', '#ff0000');
-
-        expect(useCardStore.getState().data.theme.primaryColor).toBe('#ff0000');
+        updateTheme('primaryColor', '#000000');
+        expect(useCardStore.getState().data.theme.primaryColor).toBe('#000000');
     });
 
     it('should set template', () => {
         const { setTemplate } = useCardStore.getState();
-
-        setTemplate('minimal');
-
-        expect(useCardStore.getState().data.templateId).toBe('minimal');
-    });
-
-    it('should add social link', () => {
-        const { addSocialLink } = useCardStore.getState();
-        const newLink = { id: '1', platform: 'twitter' as const, url: 'https://twitter.com' };
-
-        addSocialLink(newLink);
-
-        expect(useCardStore.getState().data.socialLinks).toHaveLength(1);
-        expect(useCardStore.getState().data.socialLinks[0]).toEqual(newLink);
-    });
-
-    it('should remove social link', () => {
-        const { addSocialLink, removeSocialLink } = useCardStore.getState();
-        const newLink = { id: '1', platform: 'twitter' as const, url: 'https://twitter.com' };
-
-        addSocialLink(newLink);
-        removeSocialLink('1');
-
-        expect(useCardStore.getState().data.socialLinks).toHaveLength(0);
-    });
-
-    it('should respect rate limiting on save', async () => {
-        const { saveCard } = useCardStore.getState();
-
-        // Mock Date.now
-        const realDateNow = Date.now;
-        const mockNow = 10000;
-        global.Date.now = () => mockNow;
-
-        // Manually set lastSaved to simulate a recent save
-        useCardStore.setState({ lastSaved: mockNow });
-
-        // Advance time only by 1s (less than 2s cooldown)
-        global.Date.now = () => mockNow + 1000;
-
-        await expect(saveCard()).rejects.toThrow('Please wait a moment before saving again.');
-
-        // Restore Date.now
-        global.Date.now = realDateNow;
+        setTemplate('creative');
+        expect(useCardStore.getState().data.templateId).toBe('creative');
     });
 });

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { User } from '@supabase/supabase-js';
 import { useRouter } from 'next/navigation';
-import { Loader2, LogOut, Edit, Trash2, Plus } from 'lucide-react';
+import { Loader2, LogOut, Edit, Trash2, Plus, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'sonner';
 
@@ -15,6 +15,8 @@ interface SavedCard {
     data: any;
 }
 
+import { AnimatePresence, motion } from 'framer-motion';
+
 export default function ProfilePage() {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
@@ -24,26 +26,37 @@ export default function ProfilePage() {
 
     useEffect(() => {
         const getUserAndCards = async () => {
-            const { data: { user } } = await supabase.auth.getUser();
-            if (!user) {
-                router.push('/');
-                return;
-            }
-            setUser(user);
+            try {
+                const { data: { user }, error: authError } = await supabase.auth.getUser();
+                if (authError || !user) {
+                    console.error('Auth error:', authError);
+                    router.push('/');
+                    return;
+                }
+                setUser(user);
 
-            const { data: cards, error } = await supabase
-                .from('cards')
-                .select('*')
-                .eq('user_id', user.id)
-                .order('updated_at', { ascending: false });
+                const { data: cards, error } = await supabase
+                    .from('cards')
+                    .select('*')
+                    .eq('user_id', user.id)
+                    .order('updated_at', { ascending: false });
 
-            if (error) {
-                console.error('Error fetching cards:', error);
-                toast.error('Failed to load cards');
-            } else {
-                setCards(cards || []);
+                if (error) {
+                    console.error('Error fetching cards:', error);
+                    toast.error('Failed to load cards');
+                } else {
+                    setCards(cards || []);
+                }
+            } catch (error) {
+                console.error('Unexpected error loading profile:', error);
+                toast.error('Error loading profile. Please try again.');
+                // If storage access is denied, we might want to redirect
+                if (error instanceof Error && error.message.includes('Access to storage')) {
+                    router.push('/');
+                }
+            } finally {
+                setLoading(false);
             }
-            setLoading(false);
         };
 
         getUserAndCards();
@@ -85,9 +98,18 @@ export default function ProfilePage() {
             <div className="max-w-4xl mx-auto space-y-8">
                 {/* Header */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-border pb-6">
-                    <div>
-                        <h1 className="text-3xl font-bold text-foreground">My Profile</h1>
-                        <p className="text-muted-foreground mt-1">{user?.email}</p>
+                    <div className="flex items-center gap-4">
+                        <Link
+                            href="/"
+                            className="p-2 hover:bg-muted rounded-full transition-colors"
+                            title="Back to Home"
+                        >
+                            <ArrowLeft className="w-5 h-5 text-muted-foreground" />
+                        </Link>
+                        <div>
+                            <h1 className="text-3xl font-bold text-foreground">My Profile</h1>
+                            <p className="text-muted-foreground mt-1">{user?.email}</p>
+                        </div>
                     </div>
                     <button
                         onClick={handleSignOut}
@@ -122,40 +144,55 @@ export default function ProfilePage() {
                             </Link>
                         </div>
                     ) : (
-                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {cards.map((card) => (
-                                <div key={card.id} className="bg-card border border-border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-                                    <div className="p-6 space-y-4">
-                                        <div>
-                                            <h3 className="font-semibold text-lg text-card-foreground truncate">
-                                                {card.data.personal.fullName || 'Untitled Card'}
-                                            </h3>
-                                            <p className="text-sm text-muted-foreground truncate">
-                                                {card.data.personal.jobTitle || 'No Title'}
-                                            </p>
+                        <motion.div
+                            className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ staggerChildren: 0.1 }}
+                        >
+                            <AnimatePresence mode="popLayout">
+                                {cards.map((card) => (
+                                    <motion.div
+                                        key={card.id}
+                                        layout
+                                        initial={{ opacity: 0, scale: 0.9 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0, scale: 0.9 }}
+                                        transition={{ duration: 0.2 }}
+                                        className="bg-card border border-border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+                                    >
+                                        <div className="p-6 space-y-4">
+                                            <div>
+                                                <h3 className="font-semibold text-lg text-card-foreground truncate">
+                                                    {card.data.personal.fullName || 'Untitled Card'}
+                                                </h3>
+                                                <p className="text-sm text-muted-foreground truncate">
+                                                    {card.data.personal.jobTitle || 'No Title'}
+                                                </p>
+                                            </div>
+                                            <div className="text-xs text-muted-foreground">
+                                                Last updated: {new Date(card.updated_at).toLocaleDateString()}
+                                            </div>
                                         </div>
-                                        <div className="text-xs text-muted-foreground">
-                                            Last updated: {new Date(card.updated_at).toLocaleDateString()}
+                                        <div className="bg-muted/50 px-6 py-4 flex justify-between items-center border-t border-border">
+                                            <Link
+                                                href={`/create?id=${card.id}`}
+                                                className="flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80"
+                                            >
+                                                <Edit className="w-4 h-4" />
+                                                Edit
+                                            </Link>
+                                            <button
+                                                onClick={() => handleDeleteCard(card.id)}
+                                                className="text-muted-foreground hover:text-red-500 transition-colors"
+                                            >
+                                                <Trash2 className="w-4 h-4" />
+                                            </button>
                                         </div>
-                                    </div>
-                                    <div className="bg-muted/50 px-6 py-4 flex justify-between items-center border-t border-border">
-                                        <Link
-                                            href={`/create?id=${card.id}`}
-                                            className="flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80"
-                                        >
-                                            <Edit className="w-4 h-4" />
-                                            Edit
-                                        </Link>
-                                        <button
-                                            onClick={() => handleDeleteCard(card.id)}
-                                            className="text-muted-foreground hover:text-red-500 transition-colors"
-                                        >
-                                            <Trash2 className="w-4 h-4" />
-                                        </button>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
+                                    </motion.div>
+                                ))}
+                            </AnimatePresence>
+                        </motion.div>
                     )}
                 </div>
             </div>

@@ -55,7 +55,12 @@ const HorizonTemplate: React.FC<TemplateProps> = ({ data }) => {
 
                 <div className="relative z-10 text-white">
                     <h1 className="text-3xl font-bold tracking-tight">{personal.fullName}</h1>
-                    <p className="text-white/80 font-medium">{personal.jobTitle}</p>
+                    <div className="flex flex-col gap-0.5">
+                        <p className="text-white/80 font-medium">{personal.jobTitle}</p>
+                        {personal.company && (
+                            <p className="text-white/60 text-sm">@ {personal.company}</p>
+                        )}
+                    </div>
                 </div>
             </div>
 
@@ -65,7 +70,7 @@ const HorizonTemplate: React.FC<TemplateProps> = ({ data }) => {
                     <div>
                         <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">About</h3>
                         <p className="text-gray-600 text-sm leading-relaxed">
-                            {personal.about}
+                            {personal.tagline || personal.about}
                         </p>
                     </div>
 

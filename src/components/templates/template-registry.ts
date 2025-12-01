@@ -17,6 +17,7 @@ export const templates: Record<string, TemplateDefinition> = {
         name: 'Bold Creative',
         description: 'Artistic layout with bold typography and geometric shapes.',
         thumbnail: '/templates/creative.png', // Placeholder
+        category: 'creative',
         component: CreativeTemplate,
     },
     executive: {
@@ -24,6 +25,7 @@ export const templates: Record<string, TemplateDefinition> = {
         name: 'Executive',
         description: 'High-end corporate design with serif typography.',
         thumbnail: '/templates/executive.png', // Placeholder
+        category: 'professional',
         component: ExecutiveTemplate,
     },
     minimalistPro: {
@@ -31,6 +33,7 @@ export const templates: Record<string, TemplateDefinition> = {
         name: 'Minimalist Pro',
         description: 'Ultra-clean, whitespace-heavy design for professionals.',
         thumbnail: '/templates/minimalist-pro.png', // Placeholder
+        category: 'simple',
         component: MinimalistProTemplate,
     },
     architect: {
@@ -38,6 +41,7 @@ export const templates: Record<string, TemplateDefinition> = {
         name: 'The Architect',
         description: 'Structured, grid-based layout with technical precision.',
         thumbnail: '/templates/architect.png', // Placeholder
+        category: 'professional',
         component: ArchitectTemplate,
     },
     vogue: {
@@ -45,6 +49,7 @@ export const templates: Record<string, TemplateDefinition> = {
         name: 'Vogue',
         description: 'Editorial fashion magazine style with large typography.',
         thumbnail: '/templates/vogue.png', // Placeholder
+        category: 'creative',
         component: VogueTemplate,
     },
     horizon: {
@@ -52,6 +57,7 @@ export const templates: Record<string, TemplateDefinition> = {
         name: 'Horizon',
         description: 'Modern split-screen layout with landscape focus.',
         thumbnail: '/templates/horizon.png', // Placeholder
+        category: 'professional',
         component: HorizonTemplate,
     },
     bloom: {
@@ -59,6 +65,7 @@ export const templates: Record<string, TemplateDefinition> = {
         name: 'Bloom',
         description: 'Soft, organic design with elegant curves and nature tones.',
         thumbnail: '/templates/bloom.png', // Placeholder
+        category: 'simple',
         component: BloomTemplate,
     },
     midnight: {
@@ -66,6 +73,7 @@ export const templates: Record<string, TemplateDefinition> = {
         name: 'Midnight',
         description: 'Premium dark mode with glowing accents.',
         thumbnail: '/templates/midnight.png', // Placeholder
+        category: 'creative',
         component: MidnightTemplate,
     },
     swiss: {
@@ -73,6 +81,7 @@ export const templates: Record<string, TemplateDefinition> = {
         name: 'Swiss Style',
         description: 'International typographic style with strong grids.',
         thumbnail: '/templates/swiss.png', // Placeholder
+        category: 'professional',
         component: SwissTemplate,
     },
     abstract: {
@@ -80,6 +89,7 @@ export const templates: Record<string, TemplateDefinition> = {
         name: 'Abstract',
         description: 'Artistic background patterns and creative layout.',
         thumbnail: '/templates/abstract.png', // Placeholder
+        category: 'creative',
         component: AbstractTemplate,
     },
     tech: {
@@ -87,6 +97,7 @@ export const templates: Record<string, TemplateDefinition> = {
         name: 'Dev Terminal',
         description: 'Clean, modern tech aesthetic with monospaced details.',
         thumbnail: '/templates/tech.png', // Placeholder
+        category: 'tech',
         component: TechTemplate,
     },
 };

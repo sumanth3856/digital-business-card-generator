@@ -31,7 +31,12 @@ const SwissTemplate: React.FC<TemplateProps> = ({ data }) => {
                             CH
                         </div>
                     </div>
-                    <p className="text-lg font-medium opacity-90">{personal.jobTitle}</p>
+                    <div className="flex flex-col gap-1">
+                        <p className="text-lg font-medium opacity-90">{personal.jobTitle}</p>
+                        {personal.company && (
+                            <p className="text-sm font-medium opacity-75">@ {personal.company}</p>
+                        )}
+                    </div>
                 </div>
 
                 {/* Avatar Block */}
@@ -48,7 +53,7 @@ const SwissTemplate: React.FC<TemplateProps> = ({ data }) => {
                 {/* Info Block */}
                 <div className="col-span-7 row-span-2 bg-black text-white p-6 flex flex-col justify-center">
                     <p className="text-sm font-medium leading-relaxed opacity-80">
-                        {personal.about}
+                        {personal.tagline || personal.about}
                     </p>
                 </div>
 

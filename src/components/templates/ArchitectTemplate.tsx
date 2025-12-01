@@ -29,9 +29,16 @@ const ArchitectTemplate: React.FC<TemplateProps> = ({ data }) => {
             <div className="relative z-10 border-2 border-black h-full flex flex-col p-6 bg-white/50 backdrop-blur-sm">
                 <div className="flex justify-between items-start mb-10 border-b-2 border-black pb-6">
                     <div>
-                        <h1 className="text-3xl font-bold uppercase tracking-tighter mb-1">{personal.fullName}</h1>
-                        <div className="inline-block px-2 py-1 bg-black text-white text-xs font-bold uppercase tracking-widest">
-                            {personal.jobTitle}
+                        <h1 className="text-3xl font-bold uppercase tracking-tighter mb-1 text-black">{personal.fullName}</h1>
+                        <div className="flex flex-col items-start gap-1">
+                            <div className="inline-block px-2 py-1 bg-black text-white text-xs font-bold uppercase tracking-widest">
+                                {personal.jobTitle}
+                            </div>
+                            {personal.company && (
+                                <div className="text-sm font-bold uppercase tracking-wide text-gray-800">
+                                    @ {personal.company}
+                                </div>
+                            )}
                         </div>
                     </div>
                     {personal.avatarUrl && (
@@ -44,8 +51,8 @@ const ArchitectTemplate: React.FC<TemplateProps> = ({ data }) => {
                 <div className="flex-grow grid grid-cols-1 gap-8 content-start">
                     <div className="space-y-2">
                         <h3 className="text-xs font-bold uppercase text-gray-500 tracking-widest">Profile</h3>
-                        <p className="text-sm leading-relaxed border-l-2 border-black pl-4">
-                            {personal.about}
+                        <p className="text-sm leading-relaxed border-l-2 border-black pl-4 text-gray-900 font-medium">
+                            {personal.tagline || personal.about}
                         </p>
                     </div>
 

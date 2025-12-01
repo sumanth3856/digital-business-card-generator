@@ -37,7 +37,12 @@ const MidnightTemplate: React.FC<TemplateProps> = ({ data }) => {
                         <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">
                             {personal.fullName}
                         </h1>
-                        <p className="text-sm text-blue-400 font-medium">{personal.jobTitle}</p>
+                        <div className="flex flex-col gap-0.5">
+                            <p className="text-sm text-blue-400 font-medium">{personal.jobTitle}</p>
+                            {personal.company && (
+                                <p className="text-xs text-blue-400/60">@ {personal.company}</p>
+                            )}
+                        </div>
                     </div>
                 </div>
 
@@ -45,7 +50,7 @@ const MidnightTemplate: React.FC<TemplateProps> = ({ data }) => {
                     <div className="p-6 rounded-3xl bg-white/5 border border-white/5 backdrop-blur-sm">
                         <h3 className="text-xs font-bold text-white/40 uppercase tracking-widest mb-3">About</h3>
                         <p className="text-white/80 leading-relaxed font-light text-sm">
-                            {personal.about}
+                            {personal.tagline || personal.about}
                         </p>
                     </div>
 
@@ -64,6 +69,14 @@ const MidnightTemplate: React.FC<TemplateProps> = ({ data }) => {
                                     <Phone size={16} />
                                 </div>
                                 <span className="text-sm text-white/90">{personal.phone}</span>
+                            </div>
+                        )}
+                        {personal.location && (
+                            <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/5 transition-colors group">
+                                <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-400 group-hover:text-emerald-300 transition-colors">
+                                    <MapPin size={16} />
+                                </div>
+                                <span className="text-sm text-white/90">{personal.location}</span>
                             </div>
                         )}
                     </div>

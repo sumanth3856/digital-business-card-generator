@@ -36,9 +36,11 @@ class ErrorBoundary extends Component<Props, State> {
                         <p className="text-slate-600 dark:text-slate-400 mb-6">
                             We apologize for the inconvenience. An unexpected error has occurred.
                         </p>
-                        <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-4 rounded-lg mb-6 text-sm font-mono text-left overflow-auto max-h-32">
-                            {this.state.error?.message}
-                        </div>
+                        {process.env.NODE_ENV === 'development' && (
+                            <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-4 rounded-lg mb-6 text-sm font-mono text-left overflow-auto max-h-32">
+                                {this.state.error?.message}
+                            </div>
+                        )}
                         <button
                             onClick={() => {
                                 this.setState({ hasError: false, error: null });

@@ -36,12 +36,17 @@ const BloomTemplate: React.FC<TemplateProps> = ({ data }) => {
                 </div>
 
                 <h1 className="text-3xl font-serif text-[#4A4036] mb-2">{personal.fullName}</h1>
-                <p className="text-sm uppercase tracking-widest text-[#8C7B6C] mb-8 font-medium">{personal.jobTitle}</p>
+                <div className="flex flex-col items-center gap-1 mb-8">
+                    <p className="text-sm uppercase tracking-widest text-[#8C7B6C] font-medium">{personal.jobTitle}</p>
+                    {personal.company && (
+                        <p className="text-xs font-serif italic text-[#8C7B6C]">@ {personal.company}</p>
+                    )}
+                </div>
 
                 <div className="w-12 h-[2px] bg-[#D4C5B5] mb-8"></div>
 
                 <p className="text-[#6B5D52] leading-relaxed mb-10 font-light">
-                    {personal.about}
+                    {personal.tagline || personal.about}
                 </p>
 
                 <div className="w-full space-y-4 mb-10">

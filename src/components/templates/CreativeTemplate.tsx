@@ -53,13 +53,18 @@ const CreativeTemplate: React.FC<TemplateProps> = ({ data }) => {
                     ))}
                 </h1>
                 <div className="h-1 w-20 mt-4 mb-6" style={{ backgroundColor: theme.primaryColor }}></div>
-                <p className="text-xl font-bold uppercase tracking-widest opacity-60">{personal.jobTitle}</p>
+                <div className="flex flex-col gap-1">
+                    <p className="text-xl font-bold uppercase tracking-widest opacity-60">{personal.jobTitle}</p>
+                    {personal.company && (
+                        <p className="text-sm font-bold opacity-50">@ {personal.company}</p>
+                    )}
+                </div>
             </div>
 
             {/* Content */}
             <div className="relative z-10 p-10 pt-6 flex-grow flex flex-col justify-between">
                 <p className="text-lg font-medium leading-relaxed max-w-sm mb-10">
-                    {personal.about}
+                    {personal.tagline || personal.about}
                 </p>
 
                 <div className="grid grid-cols-1 gap-6">
@@ -78,6 +83,14 @@ const CreativeTemplate: React.FC<TemplateProps> = ({ data }) => {
                                     <Phone size={18} />
                                 </div>
                                 <span className="font-medium">{personal.phone}</span>
+                            </div>
+                        )}
+                        {personal.location && (
+                            <div className="flex items-center gap-4 group">
+                                <div className="p-2 rounded-lg bg-black/5 group-hover:bg-black/10 transition-colors">
+                                    <MapPin size={18} />
+                                </div>
+                                <span className="font-medium">{personal.location}</span>
                             </div>
                         )}
                     </div>

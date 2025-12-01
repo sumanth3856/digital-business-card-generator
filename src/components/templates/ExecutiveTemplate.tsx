@@ -44,16 +44,23 @@ const ExecutiveTemplate: React.FC<TemplateProps> = ({ data }) => {
                 <h1 className="text-4xl font-serif font-bold mb-2 tracking-wide text-slate-900">
                     {personal.fullName}
                 </h1>
-                <p className="text-sm font-bold uppercase tracking-[0.2em] mb-8" style={{ color: theme.primaryColor }}>
-                    {personal.jobTitle}
-                </p>
+                <div className="flex flex-col items-center gap-1 mb-8">
+                    <p className="text-sm font-bold uppercase tracking-[0.2em]" style={{ color: theme.primaryColor }}>
+                        {personal.jobTitle}
+                    </p>
+                    {personal.company && (
+                        <p className="text-xs font-bold uppercase tracking-widest text-slate-500">
+                            @ {personal.company}
+                        </p>
+                    )}
+                </div>
 
                 {/* Divider */}
                 <div className="w-16 h-[1px] bg-slate-300 mb-8"></div>
 
                 {/* About */}
                 <p className="text-slate-600 leading-loose max-w-md mb-10 font-light italic">
-                    &ldquo;{personal.about}&rdquo;
+                    &ldquo;{personal.tagline || personal.about}&rdquo;
                 </p>
 
                 {/* Contact Grid */}

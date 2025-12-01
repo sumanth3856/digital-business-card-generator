@@ -32,13 +32,15 @@ const MinimalistProTemplate: React.FC<TemplateProps> = ({ data }) => {
                     )}
                     <div>
                         <h1 className="text-2xl font-bold text-gray-900 tracking-tight">{personal.fullName}</h1>
-                        <p className="text-sm font-medium text-gray-500 uppercase tracking-wider mt-1">{personal.jobTitle}</p>
+                        <p className="text-sm font-medium text-gray-500 uppercase tracking-wider mt-1">
+                            {personal.jobTitle} {personal.company ? `@ ${personal.company}` : ''}
+                        </p>
                     </div>
                 </div>
 
                 <div className="space-y-8">
                     <p className="text-gray-600 leading-relaxed max-w-xs font-light text-lg">
-                        {personal.about}
+                        {personal.tagline || personal.about}
                     </p>
 
                     <div className="space-y-4 pt-4 border-t border-gray-100 max-w-xs">

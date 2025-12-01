@@ -9,9 +9,12 @@ import { ArrowLeft, Plus, Trash2, Github, Linkedin, Twitter, Globe, Mail, Instag
 import { createClient } from '@/lib/supabase/client';
 import { SocialLink } from '@/types/card';
 import { downloadCard } from '@/utils/export';
+import { toast } from 'sonner';
+
+import { AnimatePresence, motion } from 'framer-motion';
 
 const Editor = () => {
-    const { data, updatePersonal, setTemplate, updateTheme, saveCard, isSaving, addSocialLink, removeSocialLink } = useCardStore();
+    const { data, updatePersonal, setTemplate, updateTheme, saveCard, isSaving, addSocialLink, removeSocialLink, resetCard, loadCard } = useCardStore();
     const router = useRouter();
     const searchParams = useSearchParams();
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -19,24 +22,39 @@ const Editor = () => {
     const [newLinkUrl, setNewLinkUrl] = useState('');
 
     const [isDownloadMenuOpen, setIsDownloadMenuOpen] = useState(false);
+    const [selectedCategory, setSelectedCategory] = useState<'all' | 'simple' | 'professional' | 'creative' | 'tech'>('all');
 
-    // Handle template selection from URL
+    // Handle initialization (load existing or reset for new)
     useEffect(() => {
+        const cardId = searchParams.get('id');
         const templateParam = searchParams.get('template');
-        if (templateParam && templates[templateParam]) {
-            setTemplate(templateParam);
+
+        if (cardId) {
+            loadCard(cardId);
+        } else {
+            // Only reset if we're not already editing a new card (check if data is empty? or just always reset on fresh visit without ID?)
+            // Better to always reset if no ID is present to ensure "Create New" means new.
+            resetCard();
+            if (templateParam && templates[templateParam]) {
+                setTemplate(templateParam);
+            }
         }
-    }, [searchParams, setTemplate]);
+    }, [searchParams, loadCard, resetCard, setTemplate]);
 
     // Autofill user details
     useEffect(() => {
         const autofill = async () => {
-            const supabase = createClient();
-            const { data: { user } } = await supabase.auth.getUser();
+            try {
+                const supabase = createClient();
+                const { data: { user } } = await supabase.auth.getUser();
 
-            if (user) {
-                if (!data.personal.email) updatePersonal('email', user.email || '');
-                // If we had a name in metadata, we could use it: user.user_metadata.full_name
+                if (user) {
+                    if (!data.personal.email) updatePersonal('email', user.email || '');
+                    // If we had a name in metadata, we could use it: user.user_metadata.full_name
+                }
+            } catch (error) {
+                console.error('Autofill error (likely storage access):', error);
+                // Silently fail for autofill, it's not critical
             }
         };
         autofill();
@@ -46,28 +64,36 @@ const Editor = () => {
     const handleSave = async () => {
         try {
             await saveCard();
-            alert('Card saved successfully!');
+            toast.success('Card saved successfully!');
+            router.push('/profile');
         } catch (error) {
-            console.error('Save failed:', error);
             const err = error as Error;
             if (err.message === 'User not authenticated' || err.message?.includes('Auth session missing')) {
+                // Expected error when not logged in, just show modal
                 setIsAuthModalOpen(true);
             } else {
-                alert(`Failed to save card: ${err.message || 'Unknown error'}`);
+                console.error('Save failed:', error);
+                toast.error(`Failed to save card: ${err.message || 'Unknown error'}`);
             }
         }
     };
 
     const checkAuthAndDownload = async () => {
-        const supabase = createClient();
-        const { data: { session } } = await supabase.auth.getSession();
+        try {
+            const supabase = createClient();
+            const { data: { session } } = await supabase.auth.getSession();
 
-        if (!session) {
+            if (!session) {
+                setIsAuthModalOpen(true);
+                return;
+            }
+
+            setIsDownloadMenuOpen(!isDownloadMenuOpen);
+        } catch (error) {
+            console.error('Auth check failed:', error);
+            // If storage access fails, assume not authenticated/show modal or just let them try
             setIsAuthModalOpen(true);
-            return;
         }
-
-        setIsDownloadMenuOpen(!isDownloadMenuOpen);
     };
 
     const handleExport = async (format: 'png' | 'jpg' | 'pdf') => {
@@ -88,6 +114,11 @@ const Editor = () => {
             url: newLinkUrl,
         });
         setNewLinkUrl('');
+    };
+
+    const sectionVariants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: { opacity: 1, y: 0, transition: { duration: 0.4 } }
     };
 
     return (
@@ -149,195 +180,268 @@ const Editor = () => {
                 </div>
             </div>
 
-            {/* Personal Information */}
-            <div>
-                <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">Personal Information</h3>
-                <div className="space-y-4">
-                    <div>
-                        <label className="block text-xs text-slate-500 mb-1">Full Name</label>
+            <motion.div
+                initial="hidden"
+                animate="visible"
+                variants={{
+                    visible: { transition: { staggerChildren: 0.1 } }
+                }}
+                className="space-y-8"
+            >
+                {/* Personal Information */}
+                <motion.div variants={sectionVariants}>
+                    <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">Personal Information</h3>
+                    <div className="space-y-4">
+                        <div>
+                            <label htmlFor="fullName" className="block text-xs text-slate-500 mb-1">Full Name</label>
+                            <input
+                                id="fullName"
+                                name="fullName"
+                                autoComplete="name"
+                                type="text"
+                                value={data.personal.fullName}
+                                onChange={(e) => updatePersonal('fullName', e.target.value)}
+                                className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-transparent text-sm"
+                                placeholder="John Doe"
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="jobTitle" className="block text-xs text-slate-500 mb-1">Job Title</label>
+                            <input
+                                id="jobTitle"
+                                name="jobTitle"
+                                autoComplete="organization-title"
+                                type="text"
+                                value={data.personal.jobTitle}
+                                onChange={(e) => updatePersonal('jobTitle', e.target.value)}
+                                className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-transparent text-sm"
+                                placeholder="Software Engineer"
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="company" className="block text-xs text-slate-500 mb-1">Company</label>
+                            <input
+                                id="company"
+                                name="company"
+                                autoComplete="organization"
+                                type="text"
+                                value={data.personal.company}
+                                onChange={(e) => updatePersonal('company', e.target.value)}
+                                className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-transparent text-sm"
+                                placeholder="Acme Corp"
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="tagline" className="block text-xs text-slate-500 mb-1">Bio / Tagline</label>
+                            <textarea
+                                id="tagline"
+                                name="tagline"
+                                autoComplete="off"
+                                value={data.personal.tagline}
+                                onChange={(e) => updatePersonal('tagline', e.target.value)}
+                                className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-transparent text-sm min-h-[80px]"
+                                placeholder="Brief bio or tagline..."
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="location" className="block text-xs text-slate-500 mb-1">Location</label>
+                            <input
+                                id="location"
+                                name="location"
+                                autoComplete="address-level2"
+                                type="text"
+                                value={data.personal.location}
+                                onChange={(e) => updatePersonal('location', e.target.value)}
+                                className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-transparent text-sm"
+                                placeholder="San Francisco, CA"
+                            />
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label htmlFor="email" className="block text-xs text-slate-500 mb-1">Email</label>
+                                <input
+                                    id="email"
+                                    name="email"
+                                    autoComplete="email"
+                                    type="email"
+                                    value={data.personal.email}
+                                    onChange={(e) => updatePersonal('email', e.target.value)}
+                                    className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-transparent text-sm"
+                                    placeholder="john@example.com"
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor="phone" className="block text-xs text-slate-500 mb-1">Phone (10 digits)</label>
+                                <input
+                                    id="phone"
+                                    name="phone"
+                                    autoComplete="tel"
+                                    type="tel"
+                                    value={data.personal.phone}
+                                    onChange={(e) => {
+                                        const value = e.target.value.replace(/\D/g, '');
+                                        if (value.length <= 10) {
+                                            updatePersonal('phone', value);
+                                        }
+                                    }}
+                                    className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-transparent text-sm"
+                                    placeholder="1234567890"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </motion.div>
+
+                {/* Templates */}
+                <motion.div variants={sectionVariants}>
+                    <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">Template</h3>
+
+                    {/* Category Tabs */}
+                    <div className="flex gap-2 overflow-x-auto pb-2 mb-3 no-scrollbar">
+                        {(['all', 'simple', 'professional', 'creative', 'tech'] as const).map((category) => (
+                            <button
+                                key={category}
+                                onClick={() => setSelectedCategory(category)}
+                                className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors ${selectedCategory === category
+                                    ? 'bg-blue-600 text-white'
+                                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
+                                    }`}
+                            >
+                                {category.charAt(0).toUpperCase() + category.slice(1)}
+                            </button>
+                        ))}
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                        {Object.values(templates)
+                            .filter(t => selectedCategory === 'all' || t.category === selectedCategory)
+                            .map((template) => (
+                                <button
+                                    key={template.id}
+                                    onClick={() => setTemplate(template.id)}
+                                    className={`p-3 rounded-xl border-2 text-left transition-all ${data.templateId === template.id
+                                        ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20'
+                                        : 'border-slate-200 dark:border-slate-800 hover:border-blue-300'
+                                        }`}
+                                >
+                                    <div className="font-semibold text-sm">{template.name}</div>
+                                    <div className="text-xs text-slate-500 mt-1 line-clamp-2">{template.description}</div>
+                                </button>
+                            ))}
+                    </div>
+                </motion.div>
+
+                {/* Social Links */}
+                <motion.div variants={sectionVariants}>
+                    <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">Social Links</h3>
+
+                    {/* Add New Link */}
+                    <div className="flex gap-2 mb-4">
+                        <label htmlFor="newLinkPlatform" className="sr-only">Platform</label>
+                        <select
+                            id="newLinkPlatform"
+                            name="newLinkPlatform"
+                            value={newLinkPlatform}
+                            onChange={(e) => setNewLinkPlatform(e.target.value as SocialLink['platform'])}
+                            className="p-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-transparent text-sm"
+                        >
+                            <option value="website">Website</option>
+                            <option value="github">GitHub</option>
+                            <option value="linkedin">LinkedIn</option>
+                            <option value="twitter">Twitter</option>
+                            <option value="instagram">Instagram</option>
+                            <option value="email">Email</option>
+                            <option value="other">Other</option>
+                        </select>
+                        <label htmlFor="newLinkUrl" className="sr-only">URL</label>
                         <input
-                            type="text"
-                            value={data.personal.fullName}
-                            onChange={(e) => updatePersonal('fullName', e.target.value)}
-                            className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-transparent text-sm"
-                            placeholder="John Doe"
+                            id="newLinkUrl"
+                            name="newLinkUrl"
+                            type="url"
+                            placeholder="URL"
+                            value={newLinkUrl}
+                            onChange={(e) => setNewLinkUrl(e.target.value)}
+                            className="flex-1 p-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-transparent text-sm"
                         />
+                        <button
+                            onClick={handleAddLink}
+                            className="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                        >
+                            <Plus className="w-5 h-5" />
+                        </button>
                     </div>
-                    <div>
-                        <label className="block text-xs text-slate-500 mb-1">Job Title</label>
-                        <input
-                            type="text"
-                            value={data.personal.jobTitle}
-                            onChange={(e) => updatePersonal('jobTitle', e.target.value)}
-                            className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-transparent text-sm"
-                            placeholder="Software Engineer"
-                        />
+
+                    {/* List Links */}
+                    <div className="space-y-2">
+                        <AnimatePresence mode="popLayout">
+                            {data.socialLinks.map((link) => (
+                                <motion.div
+                                    key={link.id}
+                                    layout
+                                    initial={{ opacity: 0, height: 0 }}
+                                    animate={{ opacity: 1, height: 'auto' }}
+                                    exit={{ opacity: 0, height: 0 }}
+                                    className="flex items-center gap-2 p-2 bg-slate-50 dark:bg-slate-900 rounded-lg group"
+                                >
+                                    <div className="p-1.5 bg-white dark:bg-slate-800 rounded shadow-sm text-slate-600 dark:text-slate-400">
+                                        {link.platform === 'github' && <Github className="w-4 h-4" />}
+                                        {link.platform === 'linkedin' && <Linkedin className="w-4 h-4" />}
+                                        {link.platform === 'twitter' && <Twitter className="w-4 h-4" />}
+                                        {link.platform === 'instagram' && <Instagram className="w-4 h-4" />}
+                                        {link.platform === 'email' && <Mail className="w-4 h-4" />}
+                                        {(link.platform === 'website' || link.platform === 'other') && <Globe className="w-4 h-4" />}
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <div className="text-xs font-medium text-slate-500 uppercase">{link.platform}</div>
+                                        <div className="text-sm truncate">{link.url}</div>
+                                    </div>
+                                    <button
+                                        onClick={() => removeSocialLink(link.id)}
+                                        className="p-1.5 text-slate-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all"
+                                    >
+                                        <Trash2 className="w-4 h-4" />
+                                    </button>
+                                </motion.div>
+                            ))}
+                        </AnimatePresence>
                     </div>
-                    <div>
-                        <label className="block text-xs text-slate-500 mb-1">Company</label>
-                        <input
-                            type="text"
-                            value={data.personal.company}
-                            onChange={(e) => updatePersonal('company', e.target.value)}
-                            className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-transparent text-sm"
-                            placeholder="Acme Corp"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-xs text-slate-500 mb-1">Bio / Tagline</label>
-                        <textarea
-                            value={data.personal.tagline}
-                            onChange={(e) => updatePersonal('tagline', e.target.value)}
-                            className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-transparent text-sm min-h-[80px]"
-                            placeholder="Brief bio or tagline..."
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-xs text-slate-500 mb-1">Location</label>
-                        <input
-                            type="text"
-                            value={data.personal.location}
-                            onChange={(e) => updatePersonal('location', e.target.value)}
-                            className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-transparent text-sm"
-                            placeholder="San Francisco, CA"
-                        />
-                    </div>
+                </motion.div>
+
+                {/* Theme */}
+                <motion.div variants={sectionVariants}>
+                    <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">Theme</h3>
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-xs text-slate-500 mb-1">Email</label>
-                            <input
-                                type="email"
-                                value={data.personal.email}
-                                onChange={(e) => updatePersonal('email', e.target.value)}
-                                className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-transparent text-sm"
-                                placeholder="john@example.com"
-                            />
+                            <label htmlFor="primaryColor" className="block text-xs text-slate-500 mb-1">Primary</label>
+                            <div className="flex items-center gap-2">
+                                <input
+                                    id="primaryColor"
+                                    name="primaryColor"
+                                    type="color"
+                                    value={data.theme.primaryColor}
+                                    onChange={(e) => updateTheme('primaryColor', e.target.value)}
+                                    className="w-8 h-8 rounded cursor-pointer border-0 p-0"
+                                />
+                                <span className="text-xs font-mono text-slate-500">{data.theme.primaryColor}</span>
+                            </div>
                         </div>
                         <div>
-                            <label className="block text-xs text-slate-500 mb-1">Phone</label>
-                            <input
-                                type="tel"
-                                value={data.personal.phone}
-                                onChange={(e) => updatePersonal('phone', e.target.value)}
-                                className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-transparent text-sm"
-                                placeholder="+1 (555) 000-0000"
-                            />
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Templates */}
-            <div>
-                <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">Template</h3>
-                <div className="grid grid-cols-2 gap-3">
-                    {Object.values(templates).map((template) => (
-                        <button
-                            key={template.id}
-                            onClick={() => setTemplate(template.id)}
-                            className={`p-3 rounded-xl border-2 text-left transition-all ${data.templateId === template.id
-                                ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20'
-                                : 'border-slate-200 dark:border-slate-800 hover:border-blue-300'
-                                }`}
-                        >
-                            <div className="font-semibold text-sm">{template.name}</div>
-                        </button>
-                    ))}
-
-                </div>
-            </div>
-
-            {/* Social Links */}
-            <div>
-                <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">Social Links</h3>
-
-                {/* Add New Link */}
-                <div className="flex gap-2 mb-4">
-                    <select
-                        value={newLinkPlatform}
-                        onChange={(e) => setNewLinkPlatform(e.target.value as SocialLink['platform'])}
-                        className="p-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-transparent text-sm"
-                    >
-                        <option value="website">Website</option>
-                        <option value="github">GitHub</option>
-                        <option value="linkedin">LinkedIn</option>
-                        <option value="twitter">Twitter</option>
-                        <option value="instagram">Instagram</option>
-                        <option value="email">Email</option>
-                        <option value="other">Other</option>
-                    </select>
-                    <input
-                        type="url"
-                        placeholder="URL"
-                        value={newLinkUrl}
-                        onChange={(e) => setNewLinkUrl(e.target.value)}
-                        className="flex-1 p-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-transparent text-sm"
-                    />
-                    <button
-                        onClick={handleAddLink}
-                        className="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                    >
-                        <Plus className="w-5 h-5" />
-                    </button>
-                </div>
-
-                {/* List Links */}
-                <div className="space-y-2">
-                    {data.socialLinks.map((link) => (
-                        <div key={link.id} className="flex items-center gap-2 p-2 bg-slate-50 dark:bg-slate-900 rounded-lg group">
-                            <div className="p-1.5 bg-white dark:bg-slate-800 rounded shadow-sm text-slate-600 dark:text-slate-400">
-                                {link.platform === 'github' && <Github className="w-4 h-4" />}
-                                {link.platform === 'linkedin' && <Linkedin className="w-4 h-4" />}
-                                {link.platform === 'twitter' && <Twitter className="w-4 h-4" />}
-                                {link.platform === 'instagram' && <Instagram className="w-4 h-4" />}
-                                {link.platform === 'email' && <Mail className="w-4 h-4" />}
-                                {(link.platform === 'website' || link.platform === 'other') && <Globe className="w-4 h-4" />}
+                            <label htmlFor="backgroundColor" className="block text-xs text-slate-500 mb-1">Background</label>
+                            <div className="flex items-center gap-2">
+                                <input
+                                    id="backgroundColor"
+                                    name="backgroundColor"
+                                    type="color"
+                                    value={data.theme.backgroundColor}
+                                    onChange={(e) => updateTheme('backgroundColor', e.target.value)}
+                                    className="w-8 h-8 rounded cursor-pointer border-0 p-0"
+                                />
+                                <span className="text-xs font-mono text-slate-500">{data.theme.backgroundColor}</span>
                             </div>
-                            <div className="flex-1 min-w-0">
-                                <div className="text-xs font-medium text-slate-500 uppercase">{link.platform}</div>
-                                <div className="text-sm truncate">{link.url}</div>
-                            </div>
-                            <button
-                                onClick={() => removeSocialLink(link.id)}
-                                className="p-1.5 text-slate-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all"
-                            >
-                                <Trash2 className="w-4 h-4" />
-                            </button>
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-            {/* Theme */}
-            <div>
-                <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">Theme</h3>
-                <div className="grid grid-cols-2 gap-4">
-                    <div>
-                        <label className="block text-xs text-slate-500 mb-1">Primary</label>
-                        <div className="flex items-center gap-2">
-                            <input
-                                type="color"
-                                value={data.theme.primaryColor}
-                                onChange={(e) => updateTheme('primaryColor', e.target.value)}
-                                className="w-8 h-8 rounded cursor-pointer border-0 p-0"
-                            />
-                            <span className="text-xs font-mono text-slate-500">{data.theme.primaryColor}</span>
                         </div>
                     </div>
-                    <div>
-                        <label className="block text-xs text-slate-500 mb-1">Background</label>
-                        <div className="flex items-center gap-2">
-                            <input
-                                type="color"
-                                value={data.theme.backgroundColor}
-                                onChange={(e) => updateTheme('backgroundColor', e.target.value)}
-                                className="w-8 h-8 rounded cursor-pointer border-0 p-0"
-                            />
-                            <span className="text-xs font-mono text-slate-500">{data.theme.backgroundColor}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                </motion.div>
+            </motion.div>
         </div>
     );
 };

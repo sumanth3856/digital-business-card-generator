@@ -39,19 +39,34 @@ const AbstractTemplate: React.FC<TemplateProps> = ({ data }) => {
                     </div>
                 </div>
 
-                <h1 className="text-3xl font-black text-gray-900 mb-2 tracking-tight">
+                <h1 className="text-4xl font-bold mb-2 text-gray-900">
                     {personal.fullName}
                 </h1>
-                <span className="px-4 py-1.5 rounded-full bg-black text-white text-xs font-bold uppercase tracking-wider mb-8">
-                    {personal.jobTitle}
-                </span>
+                <div className="flex flex-col items-center gap-1 mb-8">
+                    <span className="px-4 py-1.5 rounded-full bg-black text-white text-xs font-bold uppercase tracking-wider">
+                        {personal.jobTitle}
+                    </span>
+                    {personal.company && (
+                        <span className="text-sm font-semibold text-gray-600">
+                            @ {personal.company}
+                        </span>
+                    )}
+                </div>
 
                 <p className="text-gray-700 font-medium leading-relaxed max-w-xs mb-10">
-                    {personal.about}
+                    {personal.tagline || personal.about}
                 </p>
 
                 <div className="w-full bg-white/60 rounded-2xl p-6 mb-8 shadow-sm">
                     <div className="space-y-4">
+                        {personal.location && (
+                            <div className="flex items-center gap-3 text-gray-800">
+                                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700">
+                                    <MapPin size={14} />
+                                </div>
+                                <span className="font-medium text-sm">{personal.location}</span>
+                            </div>
+                        )}
                         {personal.email && (
                             <div className="flex items-center gap-3 text-gray-800">
                                 <div className="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-700">
