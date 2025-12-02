@@ -89,9 +89,9 @@ const CyberFutureTemplate: React.FC<TemplateProps> = ({ data }) => {
                                 <span>System.Bio</span>
                             </div>
                             <p className="text-neutral-300 leading-relaxed border-l-2 border-cyan-500/30 pl-4">
-                                <span className="text-cyan-500 opacity-50">/* </span>
+                                <span className="text-cyan-500 opacity-50">{'/*'} </span>
                                 {personal.about || "Executing creative solutions in a digital environment."}
-                                <span className="text-cyan-500 opacity-50"> */</span>
+                                <span className="text-cyan-500 opacity-50">{' */'}</span>
                             </p>
                         </div>
 
