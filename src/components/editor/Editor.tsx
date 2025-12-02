@@ -122,24 +122,24 @@ const Editor = () => {
     };
 
     return (
-        <div className="h-full overflow-y-auto p-6 space-y-8 bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800">
+        <div className="h-full overflow-y-auto p-6 space-y-8 bg-white border-r border-neutral-200">
             <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
 
             {/* Header */}
-            <div className="flex justify-between items-center sticky top-0 bg-white dark:bg-slate-950 z-10 py-2 border-b border-slate-100 dark:border-slate-800 mb-6">
+            <div className="flex justify-between items-center sticky top-0 bg-white z-10 py-2 border-b border-neutral-100 mb-6">
                 <button
                     onClick={() => router.push('/#templates')}
-                    className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
+                    className="p-2 hover:bg-neutral-100 rounded-full transition-colors"
                     title="Back to Home"
                 >
-                    <ArrowLeft className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+                    <ArrowLeft className="w-5 h-5 text-neutral-600" />
                 </button>
                 <h2 className="text-xl font-bold">Editor</h2>
                 <div className="flex items-center gap-2 relative">
                     <div className="relative">
                         <button
                             onClick={checkAuthAndDownload}
-                            className="p-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors flex items-center gap-2"
+                            className="p-2 text-neutral-600 hover:bg-neutral-100 rounded-lg transition-colors flex items-center gap-2"
                             title="Download"
                         >
                             <Download className="w-5 h-5" />
@@ -147,22 +147,22 @@ const Editor = () => {
                         </button>
 
                         {isDownloadMenuOpen && (
-                            <div className="absolute top-full right-0 mt-2 w-32 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg shadow-xl z-50 overflow-hidden">
+                            <div className="absolute top-full right-0 mt-2 w-32 bg-white border border-neutral-200 rounded-lg shadow-xl z-50 overflow-hidden">
                                 <button
                                     onClick={() => handleExport('png')}
-                                    className="w-full px-4 py-2 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                                    className="w-full px-4 py-2 text-left text-sm hover:bg-neutral-50 transition-colors"
                                 >
                                     PNG Image
                                 </button>
                                 <button
                                     onClick={() => handleExport('jpg')}
-                                    className="w-full px-4 py-2 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                                    className="w-full px-4 py-2 text-left text-sm hover:bg-neutral-50 transition-colors"
                                 >
                                     JPG Image
                                 </button>
                                 <button
                                     onClick={() => handleExport('pdf')}
-                                    className="w-full px-4 py-2 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                                    className="w-full px-4 py-2 text-left text-sm hover:bg-neutral-50 transition-colors"
                                 >
                                     PDF Document
                                 </button>
@@ -173,7 +173,7 @@ const Editor = () => {
                     <button
                         onClick={handleSave}
                         disabled={isSaving}
-                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors text-sm font-medium"
+                        className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 transition-colors text-sm font-medium"
                     >
                         {isSaving ? 'Saving...' : 'Save'}
                     </button>
@@ -190,10 +190,10 @@ const Editor = () => {
             >
                 {/* Personal Information */}
                 <motion.div variants={sectionVariants}>
-                    <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">Personal Information</h3>
+                    <h3 className="text-sm font-semibold text-neutral-500 uppercase tracking-wider mb-3">Personal Information</h3>
                     <div className="space-y-4">
                         <div>
-                            <label htmlFor="fullName" className="block text-xs text-slate-500 mb-1">Full Name</label>
+                            <label htmlFor="fullName" className="block text-xs text-neutral-500 mb-1">Full Name</label>
                             <input
                                 id="fullName"
                                 name="fullName"
@@ -201,12 +201,12 @@ const Editor = () => {
                                 type="text"
                                 value={data.personal.fullName}
                                 onChange={(e) => updatePersonal('fullName', e.target.value)}
-                                className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-transparent text-sm"
+                                className="w-full p-2 rounded-lg border border-neutral-200 bg-transparent text-sm"
                                 placeholder="John Doe"
                             />
                         </div>
                         <div>
-                            <label htmlFor="jobTitle" className="block text-xs text-slate-500 mb-1">Job Title</label>
+                            <label htmlFor="jobTitle" className="block text-xs text-neutral-500 mb-1">Job Title</label>
                             <input
                                 id="jobTitle"
                                 name="jobTitle"
@@ -214,12 +214,12 @@ const Editor = () => {
                                 type="text"
                                 value={data.personal.jobTitle}
                                 onChange={(e) => updatePersonal('jobTitle', e.target.value)}
-                                className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-transparent text-sm"
+                                className="w-full p-2 rounded-lg border border-neutral-200 bg-transparent text-sm"
                                 placeholder="Software Engineer"
                             />
                         </div>
                         <div>
-                            <label htmlFor="company" className="block text-xs text-slate-500 mb-1">Company</label>
+                            <label htmlFor="company" className="block text-xs text-neutral-500 mb-1">Company</label>
                             <input
                                 id="company"
                                 name="company"
@@ -227,24 +227,24 @@ const Editor = () => {
                                 type="text"
                                 value={data.personal.company}
                                 onChange={(e) => updatePersonal('company', e.target.value)}
-                                className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-transparent text-sm"
+                                className="w-full p-2 rounded-lg border border-neutral-200 bg-transparent text-sm"
                                 placeholder="Acme Corp"
                             />
                         </div>
                         <div>
-                            <label htmlFor="tagline" className="block text-xs text-slate-500 mb-1">Bio / Tagline</label>
+                            <label htmlFor="tagline" className="block text-xs text-neutral-500 mb-1">Bio / Tagline</label>
                             <textarea
                                 id="tagline"
                                 name="tagline"
                                 autoComplete="off"
                                 value={data.personal.tagline}
                                 onChange={(e) => updatePersonal('tagline', e.target.value)}
-                                className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-transparent text-sm min-h-[80px]"
+                                className="w-full p-2 rounded-lg border border-neutral-200 bg-transparent text-sm min-h-[80px]"
                                 placeholder="Brief bio or tagline..."
                             />
                         </div>
                         <div>
-                            <label htmlFor="location" className="block text-xs text-slate-500 mb-1">Location</label>
+                            <label htmlFor="location" className="block text-xs text-neutral-500 mb-1">Location</label>
                             <input
                                 id="location"
                                 name="location"
@@ -252,13 +252,13 @@ const Editor = () => {
                                 type="text"
                                 value={data.personal.location}
                                 onChange={(e) => updatePersonal('location', e.target.value)}
-                                className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-transparent text-sm"
+                                className="w-full p-2 rounded-lg border border-neutral-200 bg-transparent text-sm"
                                 placeholder="San Francisco, CA"
                             />
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label htmlFor="email" className="block text-xs text-slate-500 mb-1">Email</label>
+                                <label htmlFor="email" className="block text-xs text-neutral-500 mb-1">Email</label>
                                 <input
                                     id="email"
                                     name="email"
@@ -266,12 +266,12 @@ const Editor = () => {
                                     type="email"
                                     value={data.personal.email}
                                     onChange={(e) => updatePersonal('email', e.target.value)}
-                                    className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-transparent text-sm"
+                                    className="w-full p-2 rounded-lg border border-neutral-200 bg-transparent text-sm"
                                     placeholder="john@example.com"
                                 />
                             </div>
                             <div>
-                                <label htmlFor="phone" className="block text-xs text-slate-500 mb-1">Phone (10 digits)</label>
+                                <label htmlFor="phone" className="block text-xs text-neutral-500 mb-1">Phone (10 digits)</label>
                                 <input
                                     id="phone"
                                     name="phone"
@@ -284,7 +284,7 @@ const Editor = () => {
                                             updatePersonal('phone', value);
                                         }
                                     }}
-                                    className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-transparent text-sm"
+                                    className="w-full p-2 rounded-lg border border-neutral-200 bg-transparent text-sm"
                                     placeholder="1234567890"
                                 />
                             </div>
@@ -294,7 +294,7 @@ const Editor = () => {
 
                 {/* Templates */}
                 <motion.div variants={sectionVariants}>
-                    <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">Template</h3>
+                    <h3 className="text-sm font-semibold text-neutral-500 uppercase tracking-wider mb-3">Template</h3>
 
                     {/* Category Tabs */}
                     <div className="flex gap-2 overflow-x-auto pb-2 mb-3 no-scrollbar">
@@ -303,8 +303,8 @@ const Editor = () => {
                                 key={category}
                                 onClick={() => setSelectedCategory(category)}
                                 className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors ${selectedCategory === category
-                                    ? 'bg-blue-600 text-white'
-                                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
+                                    ? 'bg-red-600 text-white'
+                                    : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
                                     }`}
                             >
                                 {category.charAt(0).toUpperCase() + category.slice(1)}
@@ -320,12 +320,12 @@ const Editor = () => {
                                     key={template.id}
                                     onClick={() => setTemplate(template.id)}
                                     className={`p-3 rounded-xl border-2 text-left transition-all ${data.templateId === template.id
-                                        ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20'
-                                        : 'border-slate-200 dark:border-slate-800 hover:border-blue-300'
+                                        ? 'border-red-600 bg-red-50'
+                                        : 'border-neutral-200 hover:border-red-300'
                                         }`}
                                 >
                                     <div className="font-semibold text-sm">{template.name}</div>
-                                    <div className="text-xs text-slate-500 mt-1 line-clamp-2">{template.description}</div>
+                                    <div className="text-xs text-neutral-500 mt-1 line-clamp-2">{template.description}</div>
                                 </button>
                             ))}
                     </div>
@@ -333,7 +333,7 @@ const Editor = () => {
 
                 {/* Social Links */}
                 <motion.div variants={sectionVariants}>
-                    <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">Social Links</h3>
+                    <h3 className="text-sm font-semibold text-neutral-500 uppercase tracking-wider mb-3">Social Links</h3>
 
                     {/* Add New Link */}
                     <div className="flex gap-2 mb-4">
@@ -343,7 +343,7 @@ const Editor = () => {
                             name="newLinkPlatform"
                             value={newLinkPlatform}
                             onChange={(e) => setNewLinkPlatform(e.target.value as SocialLink['platform'])}
-                            className="p-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-transparent text-sm"
+                            className="p-2 rounded-lg border border-neutral-200 bg-transparent text-sm"
                         >
                             <option value="website">Website</option>
                             <option value="github">GitHub</option>
@@ -361,11 +361,11 @@ const Editor = () => {
                             placeholder="URL"
                             value={newLinkUrl}
                             onChange={(e) => setNewLinkUrl(e.target.value)}
-                            className="flex-1 p-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-transparent text-sm"
+                            className="flex-1 p-2 rounded-lg border border-neutral-200 bg-transparent text-sm"
                         />
                         <button
                             onClick={handleAddLink}
-                            className="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                            className="p-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
                         >
                             <Plus className="w-5 h-5" />
                         </button>
@@ -381,9 +381,9 @@ const Editor = () => {
                                     initial={{ opacity: 0, height: 0 }}
                                     animate={{ opacity: 1, height: 'auto' }}
                                     exit={{ opacity: 0, height: 0 }}
-                                    className="flex items-center gap-2 p-2 bg-slate-50 dark:bg-slate-900 rounded-lg group"
+                                    className="flex items-center gap-2 p-2 bg-neutral-50 rounded-lg group"
                                 >
-                                    <div className="p-1.5 bg-white dark:bg-slate-800 rounded shadow-sm text-slate-600 dark:text-slate-400">
+                                    <div className="p-1.5 bg-white rounded shadow-sm text-neutral-600">
                                         {link.platform === 'github' && <Github className="w-4 h-4" />}
                                         {link.platform === 'linkedin' && <Linkedin className="w-4 h-4" />}
                                         {link.platform === 'twitter' && <Twitter className="w-4 h-4" />}
@@ -392,12 +392,12 @@ const Editor = () => {
                                         {(link.platform === 'website' || link.platform === 'other') && <Globe className="w-4 h-4" />}
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <div className="text-xs font-medium text-slate-500 uppercase">{link.platform}</div>
+                                        <div className="text-xs font-medium text-neutral-500 uppercase">{link.platform}</div>
                                         <div className="text-sm truncate">{link.url}</div>
                                     </div>
                                     <button
                                         onClick={() => removeSocialLink(link.id)}
-                                        className="p-1.5 text-slate-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all"
+                                        className="p-1.5 text-neutral-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all"
                                     >
                                         <Trash2 className="w-4 h-4" />
                                     </button>
@@ -409,10 +409,10 @@ const Editor = () => {
 
                 {/* Theme */}
                 <motion.div variants={sectionVariants}>
-                    <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">Theme</h3>
+                    <h3 className="text-sm font-semibold text-neutral-500 uppercase tracking-wider mb-3">Theme</h3>
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label htmlFor="primaryColor" className="block text-xs text-slate-500 mb-1">Primary</label>
+                            <label htmlFor="primaryColor" className="block text-xs text-neutral-500 mb-1">Primary</label>
                             <div className="flex items-center gap-2">
                                 <input
                                     id="primaryColor"
@@ -422,11 +422,11 @@ const Editor = () => {
                                     onChange={(e) => updateTheme('primaryColor', e.target.value)}
                                     className="w-8 h-8 rounded cursor-pointer border-0 p-0"
                                 />
-                                <span className="text-xs font-mono text-slate-500">{data.theme.primaryColor}</span>
+                                <span className="text-xs font-mono text-neutral-500">{data.theme.primaryColor}</span>
                             </div>
                         </div>
                         <div>
-                            <label htmlFor="backgroundColor" className="block text-xs text-slate-500 mb-1">Background</label>
+                            <label htmlFor="backgroundColor" className="block text-xs text-neutral-500 mb-1">Background</label>
                             <div className="flex items-center gap-2">
                                 <input
                                     id="backgroundColor"
@@ -436,7 +436,7 @@ const Editor = () => {
                                     onChange={(e) => updateTheme('backgroundColor', e.target.value)}
                                     className="w-8 h-8 rounded cursor-pointer border-0 p-0"
                                 />
-                                <span className="text-xs font-mono text-slate-500">{data.theme.backgroundColor}</span>
+                                <span className="text-xs font-mono text-neutral-500">{data.theme.backgroundColor}</span>
                             </div>
                         </div>
                     </div>

@@ -12,14 +12,14 @@ export default function CreatePage() {
     return (
         <div className="flex flex-col lg:flex-row h-[calc(100vh-73px)] overflow-hidden">
             {/* Mobile Tab Switcher */}
-            <div className="lg:hidden flex border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 shrink-0">
+            <div className="lg:hidden flex border-b border-neutral-200 bg-white shrink-0">
                 <button
                     onClick={() => setActiveTab('editor')}
                     className={cn(
                         "flex-1 py-3 text-sm font-medium flex items-center justify-center gap-2 transition-colors",
                         activeTab === 'editor'
-                            ? "text-blue-600 border-b-2 border-blue-600 bg-blue-50/50 dark:bg-blue-900/10"
-                            : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900"
+                            ? "text-red-600 border-b-2 border-red-600 bg-red-50/50"
+                            : "text-neutral-600 hover:bg-neutral-50"
                     )}
                 >
                     <Edit3 className="w-4 h-4" />
@@ -30,8 +30,8 @@ export default function CreatePage() {
                     className={cn(
                         "flex-1 py-3 text-sm font-medium flex items-center justify-center gap-2 transition-colors",
                         activeTab === 'preview'
-                            ? "text-blue-600 border-b-2 border-blue-600 bg-blue-50/50 dark:bg-blue-900/10"
-                            : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900"
+                            ? "text-red-600 border-b-2 border-red-600 bg-red-50/50"
+                            : "text-neutral-600 hover:bg-neutral-50"
                     )}
                 >
                     <Eye className="w-4 h-4" />
@@ -41,18 +41,18 @@ export default function CreatePage() {
 
             {/* Editor Section */}
             <div className={cn(
-                "w-full lg:w-1/3 lg:min-w-[400px] h-full border-b lg:border-b-0 lg:border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 transition-transform duration-300 ease-in-out",
+                "w-full lg:w-1/3 lg:min-w-[400px] h-full border-b lg:border-b-0 lg:border-r border-neutral-200 bg-white transition-transform duration-300 ease-in-out",
                 "lg:translate-x-0 lg:block", // Always show on desktop
                 activeTab === 'editor' ? "block" : "hidden" // Toggle on mobile
             )}>
-                <Suspense fallback={<div className="flex items-center justify-center h-full"><Loader2 className="w-8 h-8 animate-spin text-blue-600" /></div>}>
+                <Suspense fallback={<div className="flex items-center justify-center h-full"><Loader2 className="w-8 h-8 animate-spin text-red-600" /></div>}>
                     <Editor />
                 </Suspense>
             </div>
 
             {/* Preview Section */}
             <div className={cn(
-                "w-full lg:flex-1 h-full bg-slate-100 dark:bg-slate-900 transition-transform duration-300 ease-in-out",
+                "w-full lg:flex-1 h-full bg-neutral-100 transition-transform duration-300 ease-in-out",
                 "lg:translate-x-0 lg:block", // Always show on desktop
                 activeTab === 'preview' ? "block" : "hidden" // Toggle on mobile
             )}>

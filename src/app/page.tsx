@@ -8,6 +8,7 @@ import { createClient } from "@/lib/supabase/client";
 import { User } from "@supabase/supabase-js";
 import { TemplateGallery } from "@/components/home/TemplateGallery";
 import { motion, Variants } from "framer-motion";
+import { SwiftBird } from "@/components/ui/SwiftBird";
 
 export default function Home() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -55,13 +56,23 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-slate-950 overflow-hidden">
+    <div className="min-h-screen bg-white overflow-hidden selection:bg-red-100 selection:text-red-900">
       <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
 
+      {/* Swift Bird Cursor Animation */}
+      <SwiftBird />
+
       {/* Hero Section */}
-      <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32">
+      <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
         {/* Background Elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {/* Modern Grid Background */}
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+
+          {/* Vignette Mask */}
+          <div className="absolute inset-0 bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
+
+          {/* Static Blobs (Kept for ambiance, but removed the cursor follower) */}
           <motion.div
             animate={{
               scale: [1, 1.2, 1],
@@ -72,7 +83,7 @@ export default function Home() {
               repeat: Infinity,
               repeatType: "reverse"
             }}
-            className="absolute -top-1/2 -right-1/2 w-[1000px] h-[1000px] bg-blue-50 dark:bg-blue-950/20 rounded-full blur-3xl"
+            className="absolute -top-1/2 -right-1/2 w-[1000px] h-[1000px] bg-red-50 rounded-full blur-3xl"
           />
           <motion.div
             animate={{
@@ -85,10 +96,8 @@ export default function Home() {
               repeatType: "reverse",
               delay: 1
             }}
-            className="absolute -bottom-1/2 -left-1/2 w-[1000px] h-[1000px] bg-indigo-50 dark:bg-indigo-950/20 rounded-full blur-3xl"
+            className="absolute -bottom-1/2 -left-1/2 w-[1000px] h-[1000px] bg-rose-50 rounded-full blur-3xl"
           />
-          {/* Minimalistic Pattern Overlay */}
-          <div className="absolute inset-0 bg-[radial-gradient(#3b82f6_1px,transparent_1px)] [background-size:20px_20px] opacity-[0.03] dark:opacity-[0.05]"></div>
         </div>
 
         <div className="container mx-auto px-6 relative z-10">
@@ -98,43 +107,49 @@ export default function Home() {
               initial="hidden"
               animate="visible"
             >
-              <motion.div variants={itemVariants} className="mb-6 flex justify-center">
-                <span className="px-4 py-1.5 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-sm font-medium border border-blue-100 dark:border-blue-800 backdrop-blur-sm">
-                  ✨ Create your digital identity in seconds
-                </span>
+              <motion.div variants={itemVariants} className="mb-8 flex justify-center">
+                <div className="relative group cursor-default">
+                  <div className="absolute -inset-1 bg-gradient-to-r from-red-600 to-rose-600 rounded-full blur opacity-25 group-hover:opacity-50 transition duration-200"></div>
+                  <span className="relative px-6 py-2 rounded-full bg-white text-neutral-900 text-sm font-semibold border border-neutral-200 flex items-center gap-2 shadow-sm">
+                    <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                    Create your digital identity in seconds
+                  </span>
+                </div>
               </motion.div>
 
               <motion.h1
                 variants={itemVariants}
-                className="text-5xl lg:text-7xl font-bold text-slate-900 dark:text-white mb-8 tracking-tight"
+                className="text-6xl lg:text-8xl font-bold text-neutral-900 mb-8 tracking-tighter leading-[1.1]"
               >
-                Share your professional <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
-                  Digital Business Card
+                Share your <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 via-rose-500 to-orange-500 animate-gradient-x">
+                  Digital Persona
                 </span>
               </motion.h1>
 
               <motion.p
                 variants={itemVariants}
-                className="text-xl text-slate-600 dark:text-slate-300 mb-10 max-w-2xl mx-auto leading-relaxed"
+                className="text-xl md:text-2xl text-neutral-600 mb-12 max-w-2xl mx-auto leading-relaxed font-light"
               >
-                Create, customize, and share your digital business card with a simple link.
-                No app required. Professional, eco-friendly, and always up-to-date.
+                The modern way to connect. Create a stunning digital business card that leaves a lasting impression.
               </motion.p>
 
               <motion.div
                 variants={itemVariants}
-                className="flex flex-col sm:flex-row gap-4 justify-center"
+                className="flex flex-col sm:flex-row gap-5 justify-center"
               >
                 <Link
                   href="/create"
-                  className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-semibold text-lg transition-all shadow-xl shadow-blue-600/20 hover:scale-105 hover:shadow-2xl hover:shadow-blue-600/30 flex items-center justify-center gap-2"
+                  className="group relative px-8 py-4 bg-neutral-900 text-white rounded-2xl font-semibold text-lg transition-all hover:scale-105 hover:shadow-2xl hover:shadow-red-500/20 overflow-hidden"
                 >
-                  Create Free Card <ArrowRight className="w-5 h-5" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-red-600 to-rose-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <span className="relative flex items-center gap-2">
+                    Create Free Card <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </span>
                 </Link>
                 <Link
                   href="#features"
-                  className="px-8 py-4 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-800 hover:border-blue-200 dark:hover:border-blue-800 rounded-2xl font-semibold text-lg transition-all hover:bg-slate-50 dark:hover:bg-slate-800"
+                  className="px-8 py-4 bg-white text-neutral-700 border border-neutral-200 hover:border-neutral-300 rounded-2xl font-semibold text-lg transition-all hover:bg-neutral-50 shadow-sm hover:shadow-md"
                 >
                   View Features
                 </Link>
@@ -148,19 +163,22 @@ export default function Home() {
       <TemplateGallery />
 
       {/* Features Section */}
-      <section id="features" className="py-24 bg-slate-50 dark:bg-slate-900/50">
-        <div className="container mx-auto px-6">
+      <section id="features" className="py-32 bg-neutral-50 relative overflow-hidden">
+        {/* Decorative Grid */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:32px_32px]"></div>
+
+        <div className="container mx-auto px-6 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-16"
+            className="text-center mb-20"
           >
-            <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 dark:text-white mb-4">
+            <h2 className="text-4xl lg:text-5xl font-bold text-neutral-900 mb-6 tracking-tight">
               Everything you need
             </h2>
-            <p className="text-lg text-slate-600 dark:text-slate-400">
+            <p className="text-xl text-neutral-500 font-light">
               Powerful features to help you grow your network
             </p>
           </motion.div>
@@ -174,17 +192,17 @@ export default function Home() {
           >
             {[
               {
-                icon: <Zap className="w-6 h-6 text-amber-500" />,
+                icon: <Zap className="w-8 h-8 text-amber-500" />,
                 title: "Instant Sharing",
                 description: "Share your card via QR code, link, or email instantly with anyone, anywhere."
               },
               {
-                icon: <Palette className="w-6 h-6 text-purple-500" />,
+                icon: <Palette className="w-8 h-8 text-rose-500" />,
                 title: "Custom Design",
                 description: "Choose from professional templates and customize colors to match your brand."
               },
               {
-                icon: <Share2 className="w-6 h-6 text-blue-500" />,
+                icon: <Share2 className="w-8 h-8 text-red-500" />,
                 title: "Easy Updates",
                 description: "Update your information anytime and it reflects instantly on your shared card."
               }
@@ -192,13 +210,13 @@ export default function Home() {
               <motion.div
                 key={index}
                 variants={itemVariants}
-                className="bg-white dark:bg-slate-950 p-8 rounded-3xl border border-slate-100 dark:border-slate-800 hover:border-blue-100 dark:hover:border-blue-900 transition-colors shadow-sm hover:shadow-xl hover:shadow-blue-500/5 group"
+                className="bg-white p-10 rounded-[2rem] border border-neutral-100 hover:border-red-100 transition-all duration-300 shadow-sm hover:shadow-2xl hover:shadow-red-500/5 group"
               >
-                <div className="w-12 h-12 bg-slate-50 dark:bg-slate-900 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <div className="w-16 h-16 bg-neutral-50 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-300 group-hover:bg-red-50">
                   {feature.icon}
                 </div>
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">{feature.title}</h3>
-                <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                <h3 className="text-2xl font-bold text-neutral-900 mb-4">{feature.title}</h3>
+                <p className="text-neutral-600 leading-relaxed text-lg">
                   {feature.description}
                 </p>
               </motion.div>

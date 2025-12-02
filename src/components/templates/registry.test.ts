@@ -4,17 +4,10 @@ import { templates, getTemplate } from './template-registry';
 describe('Template Registry', () => {
     it('should have all expected templates', () => {
         const expectedTemplates = [
-            'creative',
-            'executive',
-            'minimalistPro',
-            'architect',
-            'vogue',
-            'horizon',
-            'bloom',
-            'midnight',
-            'swiss',
-            'abstract',
-            'tech'
+            'neoMinimalist',
+            'corporateElite',
+            'artisticSoul',
+            'cyberFuture'
         ];
 
         expectedTemplates.forEach(id => {
@@ -25,12 +18,12 @@ describe('Template Registry', () => {
     });
 
     it('getTemplate should return correct template', () => {
-        const template = getTemplate('executive');
-        expect(template.id).toBe('executive');
+        const template = getTemplate('corporateElite');
+        expect(template.id).toBe('corporateElite');
     });
 
-    it('getTemplate should return default (creative) for unknown id', () => {
+    it('getTemplate should return default (neoMinimalist) for unknown id', () => {
         const template = getTemplate('unknown-id');
-        expect(template.id).toBe('creative');
+        expect(template.id).toBe('neoMinimalist');
     });
 });
