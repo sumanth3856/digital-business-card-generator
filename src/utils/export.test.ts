@@ -7,6 +7,7 @@ import jsPDF from 'jspdf';
 vi.mock('html-to-image', () => ({
     toPng: vi.fn(),
     toJpeg: vi.fn(),
+    toCanvas: vi.fn(),
 }));
 
 // Mock jspdf
@@ -76,12 +77,16 @@ describe('downloadCard', () => {
     });
 
     it('should download PDF', async () => {
-        const mockDataUrl = 'data:image/png;base64,test';
-        vi.spyOn(htmlToImage, 'toPng').mockResolvedValue(mockDataUrl);
+        const mockCanvas = document.createElement('canvas');
+        mockCanvas.width = 500;
+        mockCanvas.height = 300;
+        mockCanvas.toDataURL = vi.fn().mockReturnValue('data:image/png;base64,test');
+
+        vi.spyOn(htmlToImage, 'toCanvas').mockResolvedValue(mockCanvas);
 
         await downloadCard('test-card', 'pdf', 'my-card');
 
-        expect(htmlToImage.toPng).toHaveBeenCalled(); // PDF uses PNG first
+        expect(htmlToImage.toCanvas).toHaveBeenCalled();
         expect(jsPDF).toHaveBeenCalled();
     });
 });

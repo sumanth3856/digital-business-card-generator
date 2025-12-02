@@ -1,10 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  reactStrictMode: true,
-  experimental: {
-    optimizePackageImports: ['lucide-react', 'framer-motion', 'sonner', 'zustand'],
-  },
+  /* config options here */
 };
 
 export default nextConfig;

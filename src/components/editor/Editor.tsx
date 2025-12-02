@@ -68,7 +68,8 @@ const Editor = () => {
         try {
             await saveCard();
             toast.success('Card saved successfully!');
-            router.push('/profile');
+            const returnUrl = searchParams.get('returnUrl');
+            router.push(returnUrl || '/profile');
         } catch (error) {
             const err = error as Error;
             if (err.message === 'User not authenticated' || err.message?.includes('Auth session missing')) {
@@ -131,7 +132,10 @@ const Editor = () => {
             {/* Header */}
             <div className="flex justify-between items-center sticky top-0 bg-white z-10 py-2 border-b border-neutral-100 mb-6">
                 <button
-                    onClick={() => router.push('/#templates')}
+                    onClick={() => {
+                        const returnUrl = searchParams.get('returnUrl');
+                        router.push(returnUrl || '/#templates');
+                    }}
                     className="p-2 hover:bg-neutral-100 rounded-full transition-colors"
                     title="Back to Home"
                 >
@@ -244,6 +248,18 @@ const Editor = () => {
                                 onChange={(e) => updatePersonal('tagline', e.target.value)}
                                 className="w-full p-2 rounded-lg border border-neutral-200 bg-transparent text-sm min-h-[80px]"
                                 placeholder="Brief bio or tagline..."
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="about" className="block text-xs text-neutral-500 mb-1">About Me</label>
+                            <textarea
+                                id="about"
+                                name="about"
+                                autoComplete="off"
+                                value={data.personal.about || ''}
+                                onChange={(e) => updatePersonal('about', e.target.value)}
+                                className="w-full p-2 rounded-lg border border-neutral-200 bg-transparent text-sm min-h-[100px]"
+                                placeholder="Tell us about yourself..."
                             />
                         </div>
                         <div>

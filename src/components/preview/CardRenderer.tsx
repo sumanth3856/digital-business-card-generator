@@ -15,7 +15,7 @@ export const CardRenderer = ({ data, templateId, scale = 1 }: CardRendererProps)
 
     return (
         <div
-            className="origin-top-left bg-white shadow-2xl"
+            className="origin-top-left bg-white shadow-2xl rounded-xl overflow-hidden"
             style={{
                 transform: `scale(${scale})`,
                 width: '100%',

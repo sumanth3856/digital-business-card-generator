@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, useSpring, useTransform, useMotionValue, useVelocity, useAnimationFrame } from 'framer-motion';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export const SwiftBird = () => {
     const cursorX = useMotionValue(-100);
@@ -25,7 +25,24 @@ export const SwiftBird = () => {
     // Smooth out the rotation
     const smoothRotation = useSpring(rotation, { damping: 20, stiffness: 200 });
 
+    const [isMobile, setIsMobile] = useState(false);
+
     useEffect(() => {
+        const checkMobile = () => {
+            // Check if device has touch capability or is small screen
+            const isTouch = window.matchMedia('(pointer: coarse)').matches;
+            const isSmallScreen = window.innerWidth < 768;
+            setIsMobile(isTouch || isSmallScreen);
+        };
+
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
+    useEffect(() => {
+        if (isMobile) return;
+
         const handleMouseMove = (e: MouseEvent) => {
             cursorX.set(e.clientX);
             cursorY.set(e.clientY);
@@ -33,7 +50,9 @@ export const SwiftBird = () => {
 
         window.addEventListener('mousemove', handleMouseMove);
         return () => window.removeEventListener('mousemove', handleMouseMove);
-    }, [cursorX, cursorY]);
+    }, [cursorX, cursorY, isMobile]);
+
+    if (isMobile) return null;
 
     return (
         <motion.div

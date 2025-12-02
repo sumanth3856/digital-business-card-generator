@@ -62,8 +62,8 @@ export const TemplateGallery = () => {
                             className="group relative bg-white rounded-3xl overflow-hidden shadow-xl hover:shadow-red-500/10 transition-all duration-500 border border-neutral-200 hover:border-red-500/30 flex flex-col"
                         >
                             {/* Preview Area */}
-                            <div className="relative aspect-[4/5] bg-neutral-100 overflow-hidden">
-                                <div className="absolute inset-0 flex items-center justify-center p-8 transform group-hover:scale-105 transition-transform duration-700 ease-out">
+                            <div className="relative aspect-[1.75/1] bg-neutral-100 overflow-hidden">
+                                <div className="absolute inset-0 flex items-center justify-center p-4 transform group-hover:scale-105 transition-transform duration-700 ease-out">
                                     <div className="w-full h-full shadow-2xl rounded-2xl overflow-hidden ring-1 ring-black/5">
                                         <CardRenderer
                                             data={{ ...previewData, templateId: template.id }}

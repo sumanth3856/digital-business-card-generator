@@ -123,15 +123,15 @@ export default function ProfilePage() {
         <div className="min-h-screen bg-white p-6 md:p-12">
             <div className="max-w-6xl mx-auto space-y-8">
                 {/* Header */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-neutral-100 pb-6">
+                <div className="bg-white border border-neutral-200 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div className="flex items-center gap-4">
-                        <Link
-                            href="/"
+                        <button
+                            onClick={() => router.back()}
                             className="p-2 hover:bg-neutral-100 rounded-full transition-colors"
-                            title="Back to Home"
+                            title="Go Back"
                         >
                             <ArrowLeft className="w-5 h-5 text-neutral-600" />
-                        </Link>
+                        </button>
                         <div>
                             <h1 className="text-3xl font-bold text-neutral-900">My Profile</h1>
                             <p className="text-neutral-500 mt-1">{user?.email}</p>
@@ -215,7 +215,7 @@ export default function ProfilePage() {
                                                     <Eye className="w-4 h-4" />
                                                 </button>
                                                 <Link
-                                                    href={`/create?id=${card.id}`}
+                                                    href={`/create?id=${card.id}&returnUrl=/profile`}
                                                     className="p-2 text-neutral-600 hover:text-red-600 hover:bg-white rounded-lg transition-colors"
                                                     title="Edit"
                                                 >
@@ -264,7 +264,7 @@ export default function ProfilePage() {
                         >
                             {/* Preview Area */}
                             <div className="flex-1 bg-neutral-100 p-8 flex items-center justify-center overflow-y-auto">
-                                <div id="preview-modal-card" className="shadow-2xl rounded-2xl overflow-hidden transform scale-90 md:scale-100 origin-center">
+                                <div id="preview-modal-card" className="w-full max-w-[650px] aspect-[1.75/1] shadow-2xl rounded-2xl overflow-hidden transform scale-90 md:scale-100 origin-center">
                                     <CardRenderer
                                         data={previewCard.data}
                                         templateId={previewCard.data.templateId || 'modern'}
@@ -306,7 +306,7 @@ export default function ProfilePage() {
                                     <div>
                                         <h4 className="text-sm font-semibold text-neutral-500 uppercase tracking-wider mb-3">Actions</h4>
                                         <Link
-                                            href={`/create?id=${previewCard.id}`}
+                                            href={`/create?id=${previewCard.id}&returnUrl=/profile`}
                                             className="w-full py-3 px-4 border border-neutral-200 text-neutral-700 rounded-xl font-medium hover:bg-neutral-50 transition-colors flex items-center justify-center gap-2"
                                         >
                                             <Edit className="w-4 h-4" /> Edit Card

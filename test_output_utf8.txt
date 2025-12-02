@@ -1,0 +1,18 @@
+﻿
+[1m[46m RUN [49m[22m [36mv4.0.14 [39m[90mD:/Digital Business Card/digital-business-card-generator[39m
+
+ [31mΓ¥»[39m src/components/templates/shared/shared.test.tsx [2m([22m[2m8 tests[22m[2m | [22m[31m4 failed[39m[2m)[22m[33m 322[2mms[22m[39m
+     [32mΓ£ô[39m should prepend https:// to domain-only URLs[32m 2[2mms[22m[39m
+     [32mΓ£ô[39m should not modify URLs with http:// or https://[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m should not modify mailto: or tel: links[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m should render correct number of links[32m 207[2mms[22m[39m
+[31m     [31m├ù[31m should ensure protocol on rendered links[39m[32m 45[2mms[22m[39m
+[31m     [31m├ù[31m should render email with mailto:[39m[32m 23[2mms[22m[39m
+[31m     [31m├ù[31m should render phone with tel:[39m[32m 21[2mms[22m[39m
+[31m     [31m├ù[31m should render website with https://[39m[32m 22[2mms[22m[39m
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m4 failed[39m[22m[2m | [22m[1m[32m4 passed[39m[22m[90m (8)[39m
+[2m   Start at [22m 19:02:45
+[2m   Duration [22m 1.88s[2m (transform 121ms, setup 0ms, import 492ms, tests 322ms, environment 827ms)[22m
+

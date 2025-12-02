@@ -1,6 +1,5 @@
 
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
 import { CardData, SocialLink } from '@/types/card';
 import { createClient } from '@/lib/supabase/client';
 
@@ -43,7 +42,7 @@ const initialData: CardData = {
     templateId: 'modern',
 };
 
-export const useCardStore = create<CardState>()(persist((set, get) => ({
+export const useCardStore = create<CardState>((set, get) => ({
     data: initialData,
     currentCardId: null,
     isSaving: false,
@@ -214,36 +213,4 @@ export const useCardStore = create<CardState>()(persist((set, get) => ({
             console.error('Error loading card:', error);
         }
     },
-}), {
-    name: 'card-storage',
-    storage: createJSONStorage(() => ({
-        getItem: (name) => {
-            if (typeof window === 'undefined') return null;
-            try {
-                return localStorage.getItem(name);
-            } catch (e) {
-                console.warn('Access to storage is not allowed', e);
-                return null;
-            }
-        },
-        setItem: (name, value) => {
-            if (typeof window === 'undefined') return;
-            try {
-                localStorage.setItem(name, value);
-            } catch (e) {
-                console.warn('Access to storage is not allowed', e);
-            }
-        },
-        removeItem: (name) => {
-            if (typeof window === 'undefined') return;
-            try {
-                localStorage.removeItem(name);
-            } catch (e) {
-                console.warn('Access to storage is not allowed', e);
-            }
-        },
-    })),
-    partialize: (state) => ({
-        data: state.data,
-    }) as unknown as CardState,
 }));
