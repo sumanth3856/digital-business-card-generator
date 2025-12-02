@@ -111,7 +111,7 @@ const CorporateEliteTemplate: React.FC<TemplateProps> = ({ data }) => {
                                         <div className="text-xs text-slate-400">Location</div>
                                         <div className="font-medium text-slate-900">{personal.location}</div>
                                     </div>
-                                </a>
+                                </div>
                             )}
                         </div>
                     </div>
