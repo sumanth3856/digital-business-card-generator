@@ -22,7 +22,10 @@ const Editor = () => {
     const [newLinkUrl, setNewLinkUrl] = useState('');
 
     const [isDownloadMenuOpen, setIsDownloadMenuOpen] = useState(false);
-    const [selectedCategory, setSelectedCategory] = useState<'all' | 'simple' | 'professional' | 'creative' | 'tech'>('all');
+    const [selectedCategory, setSelectedCategory] = useState<'all' | 'Minimalist' | 'Professional' | 'Creative' | 'Tech'>('all');
+
+    // ...
+
 
     // Handle initialization (load existing or reset for new)
     useEffect(() => {
@@ -298,7 +301,7 @@ const Editor = () => {
 
                     {/* Category Tabs */}
                     <div className="flex gap-2 overflow-x-auto pb-2 mb-3 no-scrollbar">
-                        {(['all', 'simple', 'professional', 'creative', 'tech'] as const).map((category) => (
+                        {(['all', 'Minimalist', 'Professional', 'Creative', 'Tech'] as const).map((category) => (
                             <button
                                 key={category}
                                 onClick={() => setSelectedCategory(category)}

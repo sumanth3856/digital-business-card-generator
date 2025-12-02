@@ -38,6 +38,6 @@ export interface TemplateDefinition {
     name: string;
     description: string;
     thumbnail: string;
-    category: 'simple' | 'professional' | 'creative' | 'tech';
+    category: 'Minimalist' | 'Professional' | 'Creative' | 'Tech';
     component: React.FC<TemplateProps>;
 }

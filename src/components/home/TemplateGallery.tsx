@@ -89,16 +89,14 @@ export const TemplateGallery = () => {
                                     <h3 className="text-xl font-bold text-neutral-900">
                                         {template.name}
                                     </h3>
-                                    {template.id === 'modern' && (
+                                    {template.id === 'neoMinimalist' && (
                                         <span className="px-3 py-1 bg-red-50 border border-red-100 text-red-600 text-xs font-semibold rounded-full uppercase tracking-wide">
                                             Popular
                                         </span>
                                     )}
                                 </div>
                                 <p className="text-neutral-500 text-sm mb-8 flex-grow font-light leading-relaxed">
-                                    {template.id === 'modern'
-                                        ? 'A clean, professional look perfect for corporate identities.'
-                                        : 'Minimalist design focusing on essential information.'}
+                                    {template.description}
                                 </p>
                                 <Link
                                     href={`/create?template=${template.id}`}
