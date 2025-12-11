@@ -1,6 +1,7 @@
 -- Enable necessary extensions
-create extension if not exists "pgcrypto";
-create extension if not exists "moddatetime";
+create schema if not exists extensions;
+create extension if not exists "pgcrypto" schema extensions;
+create extension if not exists "moddatetime" schema extensions;
 
 -- 1. PROFILES TABLE
 -- Stores minimal user information linked to their auth account.
@@ -15,7 +16,7 @@ create table if not exists profiles (
 -- Automatic updated_at handling for profiles
 drop trigger if exists handle_updated_at on profiles;
 create trigger handle_updated_at before update on profiles
-  for each row execute procedure moddatetime (updated_at);
+  for each row execute procedure extensions.moddatetime (updated_at);
 
 -- RLS for profiles
 alter table profiles enable row level security;
@@ -51,7 +52,7 @@ create index if not exists cards_user_id_idx on cards(user_id);
 -- Automatic updated_at handling for cards
 drop trigger if exists handle_updated_at on cards;
 create trigger handle_updated_at before update on cards
-  for each row execute procedure moddatetime (updated_at);
+  for each row execute procedure extensions.moddatetime (updated_at);
 
 -- RLS for cards
 alter table cards enable row level security;
@@ -87,7 +88,7 @@ begin
   );
   return new;
 end;
-$$ language plpgsql security definer;
+$$ language plpgsql security definer set search_path = public;
 
 -- Re-create the trigger to ensure it's up to date
 drop trigger if exists on_auth_user_created on auth.users;
